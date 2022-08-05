@@ -1,0 +1,9 @@
+/dist/flag/*.txt
+*.log
+*.tpl
+*.bak
+*.dll
+*.pdb
+.vs
+bin/
+obj/
