@@ -4,6 +4,7 @@ using Elsa.Features.Services;
 using Elsa.Persistence.Common.Extensions;
 using Elsa.Workflows.Core.Features;
 using Elsa.Workflows.Persistence.Entities;
+using Elsa.Workflows.Persistence.Extensions;
 using Elsa.Workflows.Persistence.Implementations;
 using Elsa.Workflows.Persistence.Services;
 using Microsoft.Extensions.DependencyInjection;
@@ -55,11 +56,11 @@ public class WorkflowPersistenceFeature : FeatureBase
 
     public override void Apply() =>
         Services
-            .AddMemoryStore<WorkflowDefinition, MemoryWorkflowDefinitionStore>()
-            .AddMemoryStore<WorkflowInstance, MemoryWorkflowInstanceStore>()
-            .AddMemoryStore<WorkflowBookmark, MemoryWorkflowBookmarkStore>()
-            .AddMemoryStore<WorkflowTrigger, MemoryWorkflowTriggerStore>()
-            .AddMemoryStore<WorkflowExecutionLogRecord, MemoryWorkflowExecutionLogStore>()
+            .AddMXemoryXStore<WorkflowDefinition, MemoryWorkflowDefinitionStore>()
+            .AddMXemoryXStore<WorkflowInstance, MemoryWorkflowInstanceStore>()
+            .AddMXemoryXStore<WorkflowBookmark, MemoryWorkflowBookmarkStore>()
+            .AddMXemoryXStore<WorkflowTrigger, MemoryWorkflowTriggerStore>()
+            .AddMXemoryXStore<WorkflowExecutionLogRecord, MemoryWorkflowExecutionLogStore>()
             .AddSingleton(WorkflowDefinitionStore)
             .AddSingleton(WorkflowInstanceStore)
             .AddSingleton(WorkflowBookmarkStore)
