@@ -6,9 +6,9 @@ namespace Elsa.Workflows.Persistence.Implementations;
 
 public class MemoryWorkflowTriggerStore : IWorkflowTriggerStore
 {
-    private readonly MemoryStore<WorkflowTrigger> _store;
+    private readonly MXemoryXStore<WorkflowTrigger> _store;
 
-    public MemoryWorkflowTriggerStore(MemoryStore<WorkflowTrigger> store)
+    public MemoryWorkflowTriggerStore(MXemoryXStore<WorkflowTrigger> store)
     {
         _store = store;
     }
