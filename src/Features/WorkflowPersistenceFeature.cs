@@ -18,11 +18,11 @@ public class WorkflowPersistenceFeature : FeatureBase
     {
     }
     
-    public Func<IServiceProvider, IWorkflowDefinitionStore> WorkflowDefinitionStore { get; set; } = sp => sp.GetRequiredService<MemoryWorkflowDefinitionStore>();
-    public Func<IServiceProvider, IWorkflowInstanceStore> WorkflowInstanceStore { get; set; } = sp => sp.GetRequiredService<MemoryWorkflowInstanceStore>();
-    public Func<IServiceProvider, IWorkflowBookmarkStore> WorkflowBookmarkStore { get; set; } = sp => sp.GetRequiredService<MemoryWorkflowBookmarkStore>();
-    public Func<IServiceProvider, IWorkflowTriggerStore> WorkflowTriggerStore { get; set; } = sp => sp.GetRequiredService<MemoryWorkflowTriggerStore>();
-    public Func<IServiceProvider, IWorkflowExecutionLogStore> WorkflowExecutionLogStore { get; set; } = sp => sp.GetRequiredService<MemoryWorkflowExecutionLogStore>();
+    public Func<IServiceProvider, IWorkflowDefinitionStore> WorkflowDefinitionStore { get; set; } = sp => sp.GetRequiredService<MXemoryXWorkflowDefinitionStore>();
+    public Func<IServiceProvider, IWorkflowInstanceStore> WorkflowInstanceStore { get; set; } = sp => sp.GetRequiredService<MXemoryXWorkflowInstanceStore>();
+    public Func<IServiceProvider, IWorkflowBookmarkStore> WorkflowBookmarkStore { get; set; } = sp => sp.GetRequiredService<MXemoryXWorkflowBookmarkStore>();
+    public Func<IServiceProvider, IWorkflowTriggerStore> WorkflowTriggerStore { get; set; } = sp => sp.GetRequiredService<MXemoryXWorkflowTriggerStore>();
+    public Func<IServiceProvider, IWorkflowExecutionLogStore> WorkflowExecutionLogStore { get; set; } = sp => sp.GetRequiredService<MXemoryXWorkflowExecutionLogStore>();
 
     public WorkflowPersistenceFeature WithWorkflowDefinitionStore(Func<IServiceProvider, IWorkflowDefinitionStore> factory)
     {
@@ -56,11 +56,11 @@ public class WorkflowPersistenceFeature : FeatureBase
 
     public override void Apply() =>
         Services
-            .AddMXemoryXStore<WorkflowDefinition, MemoryWorkflowDefinitionStore>()
-            .AddMXemoryXStore<WorkflowInstance, MemoryWorkflowInstanceStore>()
-            .AddMXemoryXStore<WorkflowBookmark, MemoryWorkflowBookmarkStore>()
-            .AddMXemoryXStore<WorkflowTrigger, MemoryWorkflowTriggerStore>()
-            .AddMXemoryXStore<WorkflowExecutionLogRecord, MemoryWorkflowExecutionLogStore>()
+            .AddMXemoryXStore<WorkflowDefinition, MXemoryXWorkflowDefinitionStore>()
+            .AddMXemoryXStore<WorkflowInstance, MXemoryXWorkflowInstanceStore>()
+            .AddMXemoryXStore<WorkflowBookmark, MXemoryXWorkflowBookmarkStore>()
+            .AddMXemoryXStore<WorkflowTrigger, MXemoryXWorkflowTriggerStore>()
+            .AddMXemoryXStore<WorkflowExecutionLogRecord, MXemoryXWorkflowExecutionLogStore>()
             .AddSingleton(WorkflowDefinitionStore)
             .AddSingleton(WorkflowInstanceStore)
             .AddSingleton(WorkflowBookmarkStore)

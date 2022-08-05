@@ -8,14 +8,14 @@ using Elsa.Workflows.Persistence.Services;
 
 namespace Elsa.Workflows.Persistence.Implementations;
 
-public class MemoryWorkflowDefinitionStore : IWorkflowDefinitionStore
+public class MXemoryXWorkflowDefinitionStore : IWorkflowDefinitionStore
 {
     private readonly MXemoryXStore<WorkflowDefinition> _store;
     private readonly MXemoryXStore<WorkflowInstance> _instanceStore;
     private readonly MXemoryXStore<WorkflowTrigger> _triggerStore;
     private readonly MXemoryXStore<WorkflowBookmark> _bookmarkStore;
 
-    public MemoryWorkflowDefinitionStore(
+    public MXemoryXWorkflowDefinitionStore(
         MXemoryXStore<WorkflowDefinition> store,
         MXemoryXStore<WorkflowInstance> instanceStore,
         MXemoryXStore<WorkflowTrigger> triggerStore,

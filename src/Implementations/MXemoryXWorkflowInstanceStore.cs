@@ -7,11 +7,11 @@ using Elsa.Workflows.Persistence.Services;
 
 namespace Elsa.Workflows.Persistence.Implementations;
 
-public class MemoryWorkflowInstanceStore : IWorkflowInstanceStore
+public class MXemoryXWorkflowInstanceStore : IWorkflowInstanceStore
 {
     private readonly MXemoryXStore<WorkflowInstance> _store;
 
-    public MemoryWorkflowInstanceStore(MXemoryXStore<WorkflowInstance> store)
+    public MXemoryXWorkflowInstanceStore(MXemoryXStore<WorkflowInstance> store)
     {
         _store = store;
     }

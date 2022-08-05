@@ -6,11 +6,11 @@ using Elsa.Workflows.Persistence.Services;
 
 namespace Elsa.Workflows.Persistence.Implementations;
 
-public class MemoryWorkflowExecutionLogStore : IWorkflowExecutionLogStore
+public class MXemoryXWorkflowExecutionLogStore : IWorkflowExecutionLogStore
 {
     private readonly MXemoryXStore<WorkflowExecutionLogRecord> _store;
 
-    public MemoryWorkflowExecutionLogStore(MXemoryXStore<WorkflowExecutionLogRecord> store)
+    public MXemoryXWorkflowExecutionLogStore(MXemoryXStore<WorkflowExecutionLogRecord> store)
     {
         _store = store;
     }

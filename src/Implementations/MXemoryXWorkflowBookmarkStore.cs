@@ -4,11 +4,11 @@ using Elsa.Workflows.Persistence.Services;
 
 namespace Elsa.Workflows.Persistence.Implementations;
 
-public class MemoryWorkflowBookmarkStore : IWorkflowBookmarkStore
+public class MXemoryXWorkflowBookmarkStore : IWorkflowBookmarkStore
 {
     private readonly MXemoryXStore<WorkflowBookmark> _store;
 
-    public MemoryWorkflowBookmarkStore(MXemoryXStore<WorkflowBookmark> store)
+    public MXemoryXWorkflowBookmarkStore(MXemoryXStore<WorkflowBookmark> store)
     {
         _store = store;
     }

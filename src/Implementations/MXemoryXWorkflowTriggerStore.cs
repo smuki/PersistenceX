@@ -4,11 +4,11 @@ using Elsa.Workflows.Persistence.Services;
 
 namespace Elsa.Workflows.Persistence.Implementations;
 
-public class MemoryWorkflowTriggerStore : IWorkflowTriggerStore
+public class MXemoryXWorkflowTriggerStore : IWorkflowTriggerStore
 {
     private readonly MXemoryXStore<WorkflowTrigger> _store;
 
-    public MemoryWorkflowTriggerStore(MXemoryXStore<WorkflowTrigger> store)
+    public MXemoryXWorkflowTriggerStore(MXemoryXStore<WorkflowTrigger> store)
     {
         _store = store;
     }
