@@ -9,9 +9,9 @@ namespace Elsa.Workflows.Persistence.Implementations;
 
 public class MemoryWorkflowInstanceStore : IWorkflowInstanceStore
 {
-    private readonly MemoryStore<WorkflowInstance> _store;
+    private readonly MXemoryXStore<WorkflowInstance> _store;
 
-    public MemoryWorkflowInstanceStore(MemoryStore<WorkflowInstance> store)
+    public MemoryWorkflowInstanceStore(MXemoryXStore<WorkflowInstance> store)
     {
         _store = store;
     }

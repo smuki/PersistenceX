@@ -8,9 +8,9 @@ namespace Elsa.Workflows.Persistence.Implementations;
 
 public class MemoryWorkflowExecutionLogStore : IWorkflowExecutionLogStore
 {
-    private readonly MemoryStore<WorkflowExecutionLogRecord> _store;
+    private readonly MXemoryXStore<WorkflowExecutionLogRecord> _store;
 
-    public MemoryWorkflowExecutionLogStore(MemoryStore<WorkflowExecutionLogRecord> store)
+    public MemoryWorkflowExecutionLogStore(MXemoryXStore<WorkflowExecutionLogRecord> store)
     {
         _store = store;
     }

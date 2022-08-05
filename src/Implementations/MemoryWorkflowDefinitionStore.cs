@@ -10,16 +10,16 @@ namespace Elsa.Workflows.Persistence.Implementations;
 
 public class MemoryWorkflowDefinitionStore : IWorkflowDefinitionStore
 {
-    private readonly MemoryStore<WorkflowDefinition> _store;
-    private readonly MemoryStore<WorkflowInstance> _instanceStore;
-    private readonly MemoryStore<WorkflowTrigger> _triggerStore;
-    private readonly MemoryStore<WorkflowBookmark> _bookmarkStore;
+    private readonly MXemoryXStore<WorkflowDefinition> _store;
+    private readonly MXemoryXStore<WorkflowInstance> _instanceStore;
+    private readonly MXemoryXStore<WorkflowTrigger> _triggerStore;
+    private readonly MXemoryXStore<WorkflowBookmark> _bookmarkStore;
 
     public MemoryWorkflowDefinitionStore(
-        MemoryStore<WorkflowDefinition> store,
-        MemoryStore<WorkflowInstance> instanceStore,
-        MemoryStore<WorkflowTrigger> triggerStore,
-        MemoryStore<WorkflowBookmark> bookmarkStore)
+        MXemoryXStore<WorkflowDefinition> store,
+        MXemoryXStore<WorkflowInstance> instanceStore,
+        MXemoryXStore<WorkflowTrigger> triggerStore,
+        MXemoryXStore<WorkflowBookmark> bookmarkStore)
     {
         _store = store;
         _instanceStore = instanceStore;

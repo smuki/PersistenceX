@@ -6,9 +6,9 @@ namespace Elsa.Workflows.Persistence.Implementations;
 
 public class MemoryWorkflowBookmarkStore : IWorkflowBookmarkStore
 {
-    private readonly MemoryStore<WorkflowBookmark> _store;
+    private readonly MXemoryXStore<WorkflowBookmark> _store;
 
-    public MemoryWorkflowBookmarkStore(MemoryStore<WorkflowBookmark> store)
+    public MemoryWorkflowBookmarkStore(MXemoryXStore<WorkflowBookmark> store)
     {
         _store = store;
     }
