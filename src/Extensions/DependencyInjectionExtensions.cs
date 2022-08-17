@@ -9,12 +9,12 @@ namespace Elsa.Workflows.Persistence.Extensions;
 
 public static class DependencyInjectionExtensions
 {
-    public static IModule UseWorkflowPersistence(this IModule module, Action<WorkflowPersistenceFeature>? configure = default )
+    public static IModule UseWorkflowVoltePersistence(this IModule module, Action<WorkflowPersistenceFeature>? configure = default )
     {
         module.Configure(configure);
         return module;
     }
-    public static IServiceCollection AddMXemoryXStore<TEntity, TStore>(this IServiceCollection services) where TEntity : Entity where TStore : class
+    public static IServiceCollection AddVolteStore<TEntity, TStore>(this IServiceCollection services) where TEntity : Entity where TStore : class
     {
         services.TryAddSingleton<VolteStore<TEntity>>();
         services.TryAddSingleton<TStore>();
