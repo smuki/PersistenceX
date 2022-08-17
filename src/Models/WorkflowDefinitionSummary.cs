@@ -1,6 +1,6 @@
-using Elsa.Workflows.VoltePersistence.Entities;
+using Elsa.Workflows.Persistence.Entities;
 
-namespace Elsa.Workflows.VoltePersistence.Models;
+namespace Elsa.Workflows.Persistence.Models;
 
 public record WorkflowDefinitionSummary(string Id, string DefinitionId, string? Name, string? Description, int? Version, bool IsLatest, bool IsPublished, string MaterializerName, DateTimeOffset CreatedAt)
 {

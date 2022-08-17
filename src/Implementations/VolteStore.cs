@@ -1,7 +1,7 @@
 using Elsa.Persistence.Common.Entities;
 using Volte.Data.Dapper;
 
-namespace Elsa.Workflows.VoltePersistence.Implementations;
+namespace Elsa.Workflows.Persistence.Implementations;
 
 public class VolteStore<TEntity> where TEntity : Entity
 {

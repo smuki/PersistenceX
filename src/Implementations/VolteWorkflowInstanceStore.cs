@@ -1,12 +1,12 @@
 using Elsa.Persistence.Common.Entities;
 using Elsa.Persistence.Common.Implementations;
 using Elsa.Persistence.Common.Models;
-using Elsa.Workflows.VoltePersistence.Entities;
-using Elsa.Workflows.VoltePersistence.Models;
-using Elsa.Workflows.VoltePersistence.Services;
+using Elsa.Workflows.Persistence.Entities;
+using Elsa.Workflows.Persistence.Models;
+using Elsa.Workflows.Persistence.Services;
 using Volte.Data.Dapper;
 
-namespace Elsa.Workflows.VoltePersistence.Implementations;
+namespace Elsa.Workflows.Persistence.Implementations;
 
 public class VolteWorkflowInstanceStore : IWorkflowInstanceStore
 {

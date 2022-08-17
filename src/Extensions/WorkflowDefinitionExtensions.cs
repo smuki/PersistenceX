@@ -1,8 +1,8 @@
 using Elsa.Workflows.Core.Models;
 using Elsa.Workflows.Core.Services;
-using Elsa.Workflows.VoltePersistence.Entities;
+using Elsa.Workflows.Persistence.Entities;
 
-namespace Elsa.Workflows.VoltePersistence.Extensions;
+namespace Elsa.Workflows.Persistence.Extensions;
 
 public static class WorkflowDefinitionExtensions
 {

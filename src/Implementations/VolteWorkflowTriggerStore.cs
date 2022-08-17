@@ -1,9 +1,9 @@
 using Elsa.Persistence.Common.Implementations;
-using Elsa.Workflows.VoltePersistence.Entities;
-using Elsa.Workflows.VoltePersistence.Services;
+using Elsa.Workflows.Persistence.Entities;
+using Elsa.Workflows.Persistence.Services;
 using Volte.Data.Dapper;
 
-namespace Elsa.Workflows.VoltePersistence.Implementations;
+namespace Elsa.Workflows.Persistence.Implementations;
 
 public class VolteWorkflowTriggerStore : IWorkflowTriggerStore
 {

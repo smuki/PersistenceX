@@ -3,14 +3,14 @@ using Elsa.Features.Attributes;
 using Elsa.Features.Services;
 using Elsa.Persistence.Common.Extensions;
 using Elsa.Workflows.Core.Features;
-using Elsa.Workflows.VoltePersistence.Entities;
-using Elsa.Workflows.VoltePersistence.Extensions;
-using Elsa.Workflows.VoltePersistence.Implementations;
-using Elsa.Workflows.VoltePersistence.Services;
+using Elsa.Workflows.Persistence.Entities;
+using Elsa.Workflows.Persistence.Extensions;
+using Elsa.Workflows.Persistence.Implementations;
+using Elsa.Workflows.Persistence.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Volte.Data.Dapper;
 
-namespace Elsa.Workflows.VoltePersistence.Features;
+namespace Elsa.Workflows.Persistence.Features;
 
 [DependsOn(typeof(WorkflowsFeature))]
 public class WorkflowPersistenceFeature : FeatureBase
