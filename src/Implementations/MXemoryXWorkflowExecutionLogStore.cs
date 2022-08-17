@@ -3,6 +3,7 @@ using Elsa.Persistence.Common.Implementations;
 using Elsa.Persistence.Common.Models;
 using Elsa.Workflows.Persistence.Entities;
 using Elsa.Workflows.Persistence.Services;
+using Volte.Data.Dapper;
 
 namespace Elsa.Workflows.Persistence.Implementations;
 
@@ -29,10 +30,13 @@ public class MXemoryXWorkflowExecutionLogStore : IWorkflowExecutionLogStore
 
     public Task<Page<WorkflowExecutionLogRecord>> FindManyByWorkflowInstanceIdAsync(string workflowInstanceId, PageArgs? pageArgs = default, CancellationToken cancellationToken = default)
     {
+
+        var _criteria = QueryBuilder<WorkflowExecutionLogRecord>.Builder(_store.Trans);
+            _criteria.Where("WorkflowInstanceId", Operation.Equal, workflowInstanceId);
+        _criteria.OrderBy("Timestamp");
+
         var page = _store
-            .FindMany(
-                x => x.WorkflowInstanceId == workflowInstanceId, 
-                x => x.Timestamp)
+            .FindMany(_criteria)
             .Paginate();
         
         return Task.FromResult(page);

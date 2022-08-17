@@ -1,6 +1,7 @@
 using Elsa.Persistence.Common.Implementations;
 using Elsa.Workflows.Persistence.Entities;
 using Elsa.Workflows.Persistence.Services;
+using Volte.Data.Dapper;
 
 namespace Elsa.Workflows.Persistence.Implementations;
 
@@ -27,40 +28,55 @@ public class MXemoryXWorkflowBookmarkStore : IWorkflowBookmarkStore
 
     public Task<WorkflowBookmark?> FindByIdAsync(string id, CancellationToken cancellationToken = default)
     {
-        var bookmark = _store.Find(x => x.Id == id);
+        var _criteria = QueryBuilder<WorkflowBookmark>.Builder(_store.Trans);
+        _criteria.Where("Id", Operation.Equal, id);
+
+        var bookmark = _store.Find(_criteria);
         return Task.FromResult(bookmark);
     }
 
     public Task<IEnumerable<WorkflowBookmark>> FindManyAsync(string name, string? hash, CancellationToken cancellationToken = default)
     {
-        var bookmarks = _store.Query(query =>
+        var _criteria = QueryBuilder<WorkflowBookmark>.Builder(_store.Trans);
+        _criteria.Where("Name", Operation.Equal, name);
+
+        if (!string.IsNullOrWhiteSpace(hash))
         {
-            query = query.Where(x => x.Name == name);
-
-            if (!string.IsNullOrWhiteSpace(hash))
-                query = query.Where(x => x.Hash == hash);
-
-            return query;
-        });
+            _criteria.Where("Hash", Operation.Equal, hash);
+        }
+        var bookmarks = _store.Query(_criteria);
 
         return Task.FromResult(bookmarks);
     }
 
     public Task<IEnumerable<WorkflowBookmark>> FindManyByWorkflowInstanceIdAsync(string workflowInstanceId, CancellationToken cancellationToken = default)
     {
-        var bookmarks = _store.FindMany(x => x.WorkflowInstanceId == workflowInstanceId);
+        var _criteria = QueryBuilder<WorkflowBookmark>.Builder(_store.Trans);
+        _criteria.Where("WorkflowInstanceId", Operation.Equal, workflowInstanceId);
+
+        var bookmarks = _store.FindMany(_criteria);
         return Task.FromResult(bookmarks);
     }
 
     public Task<bool> DeleteAsync(string id, CancellationToken cancellationToken = default)
     {
-        var result = _store.Delete(id);
+        var _criteria = QueryBuilder<WorkflowBookmark>.Builder(_store.Trans);
+        _criteria.Where("Id", Operation.Equal, id);
+
+        var result = _store.Delete(_criteria);
         return Task.FromResult(result);
     }
 
     public Task<int> DeleteManyAsync(IEnumerable<string> ids, CancellationToken cancellationToken = default)
     {
-        var result = _store.DeleteMany(ids);
+
+        var _criteria = QueryBuilder<WorkflowBookmark>.Builder(_store.Trans);
+        foreach (string id in ids)
+        {
+            _criteria.OrWhereClause("Id", Operation.Equal, id);
+        }
+
+        var result = _store.DeleteMany(_criteria);
         return Task.FromResult(result);
     }
 }

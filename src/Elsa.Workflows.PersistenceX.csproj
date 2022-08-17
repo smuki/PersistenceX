@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <TargetFramework>net6.0</TargetFramework>
@@ -9,6 +9,10 @@
     <ItemGroup>
       <ProjectReference Include="..\..\..\GitHub\elsa-core\src\common\Elsa.Persistence.Abstractions\Elsa.Persistence.Abstractions.csproj" />
       <ProjectReference Include="..\..\..\GitHub\elsa-core\src\modules\Elsa.Workflows.Core\Elsa.Workflows.Core.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Volte.Data.Dapper" Version="1.0.16" />
     </ItemGroup>
     
 </Project>

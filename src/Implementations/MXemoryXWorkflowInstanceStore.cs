@@ -4,6 +4,7 @@ using Elsa.Persistence.Common.Models;
 using Elsa.Workflows.Persistence.Entities;
 using Elsa.Workflows.Persistence.Models;
 using Elsa.Workflows.Persistence.Services;
+using Volte.Data.Dapper;
 
 namespace Elsa.Workflows.Persistence.Implementations;
 
@@ -18,7 +19,11 @@ public class MXemoryXWorkflowInstanceStore : IWorkflowInstanceStore
 
     public Task<WorkflowInstance?> FindByIdAsync(string id, CancellationToken cancellationToken = default)
     {
-        var instance = _store.Find(x => x.Id == id);
+        var _criteria = QueryBuilder<WorkflowInstance>.Builder(_store.Trans);
+        _criteria.Where("Id", Operation.Equal, id);
+
+        var instance = _store.Find(_criteria);
+
         return Task.FromResult(instance);
     }
 
@@ -36,19 +41,31 @@ public class MXemoryXWorkflowInstanceStore : IWorkflowInstanceStore
 
     public Task<bool> DeleteAsync(string id, CancellationToken cancellationToken = default)
     {
-        var success = _store.Delete(id);
+        var _criteria = QueryBuilder<WorkflowInstance>.Builder(_store.Trans);
+        _criteria.Where("Id", Operation.Equal, id);
+
+        var success = _store.Delete(_criteria);
         return Task.FromResult(success);
     }
 
     public Task<int> DeleteManyAsync(IEnumerable<string> ids, CancellationToken cancellationToken = default)
     {
-        var count = _store.DeleteMany(ids);
+        var _criteria = QueryBuilder<WorkflowInstance>.Builder(_store.Trans);
+        foreach (string id in ids)
+        {
+            _criteria.OrWhereClause("Id", Operation.Equal, id);
+        }
+
+        var count = _store.DeleteMany(_criteria);
         return Task.FromResult(count);
     }
 
     public Task DeleteManyByDefinitionIdAsync(string definitionId, CancellationToken cancellationToken = default)
     {
-        _store.DeleteWhere(x => x.DefinitionId == definitionId);
+        var _criteria = QueryBuilder<WorkflowInstance>.Builder(_store.Trans);
+        _criteria.Where("DefinitionId", Operation.Equal, definitionId);
+
+        _store.DeleteWhere(_criteria);
         return Task.CompletedTask;
     }
 

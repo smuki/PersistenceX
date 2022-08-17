@@ -1,63 +1,68 @@
 using Elsa.Persistence.Common.Entities;
+using Volte.Data.Dapper;
 
 namespace Elsa.Workflows.Persistence.Implementations;
 
 public class MXemoryXStore<TEntity> where TEntity : Entity
 {
+    public IDbContext Trans { get; private set; }
+
+    public MXemoryXStore(IDbContext DbContext)
+    {
+        this.Trans = DbContext;
+    }
+
+    public void Open()
+    {
+        this.Trans.Open("master");
+    }
+
     private IDictionary<string, TEntity> Entities { get; set; } = new Dictionary<string, TEntity>();
-    public void Save(TEntity entity) => Entities[entity.Id] = entity;
+    public void Save(TEntity entity)
+    {
+        this.Trans.AddNewAsync<TEntity>(entity);
+    }
 
     public void SaveMany(IEnumerable<TEntity> entities)
     {
         foreach (var entity in entities)
-            Save(entity);
-    }
-
-    public TEntity? Find(Func<TEntity, bool> predicate) => Entities.Values.Where(predicate).FirstOrDefault();
-    public IEnumerable<TEntity> FindMany(Func<TEntity, bool> predicate) => Entities.Values.Where(predicate);
-    
-    public IEnumerable<TEntity> FindMany<TKey>(Func<TEntity, bool> predicate, Func<TEntity, TKey> orderBy, OrderDirection orderDirection = OrderDirection.Ascending)
-    {
-        var query = Entities.Values.Where(predicate);
-
-        query = orderDirection switch
         {
-            OrderDirection.Ascending => query.OrderBy(orderBy),
-            OrderDirection.Descending => query.OrderByDescending(orderBy),
-            _ => query.OrderBy(orderBy)
-        };
-        
-        return query;
-    }
-
-    public IEnumerable<TEntity> List() => Entities.Values;
-
-    public bool Delete(string id) => Entities.Remove(id);
-
-    public int DeleteWhere(Func<TEntity, bool> predicate)
-    {
-        var query =
-            from entry in Entities
-            where predicate(entry.Value)
-            select entry;
-
-        var entries = query.ToList();
-        foreach (var entry in entries)
-            Entities.Remove(entry);
-
-        return entries.Count;
-    }
-
-    public int DeleteMany(IEnumerable<string> ids)
-    {
-        var count = 0;
-        foreach (var id in ids)
-        {
-            count++;
-            Entities.Remove(id);
+            this.Trans.AddNewAsync<TEntity>(entity);
         }
+    }
 
-        return count;
+    public TEntity? Find(QueryBuilder _qEntity)
+    {
+        return Trans.SingleOrDefault<TEntity>(_qEntity);
+    }
+    public IEnumerable<TEntity> FindMany(QueryBuilder _qEntity)
+    {
+        return Trans.Query<TEntity>(_qEntity);
+    }
+    public IEnumerable<TEntity> List()
+    {
+        QueryBuilder _qEntity = QueryBuilder<TEntity>.Builder(Trans);
+        _qEntity.Top(10);
+        return Trans.Query<TEntity>(_qEntity);
+    }
+
+    public bool Delete(QueryBuilder _qEntity)
+    {
+
+        return Trans.Delete<TEntity>(_qEntity);
+    }
+
+    public int DeleteWhere(QueryBuilder _qEntity)
+    {
+
+        Trans.Delete<TEntity>(_qEntity);
+        return 1;
+    }
+
+    public int DeleteMany(QueryBuilder _qEntity)
+    {
+        Trans.Delete<TEntity>(_qEntity);
+        return 1;
     }
 
     public int DeleteMany(IEnumerable<TEntity> entities)
@@ -68,17 +73,19 @@ public class MXemoryXStore<TEntity> where TEntity : Entity
         foreach (var entity in list)
         {
             count++;
-            Entities.Remove(entity.Id);
+            Trans.Delete<TEntity>(entity);
         }
 
         return count;
     }
 
-    public IEnumerable<TEntity> Query(Func<IQueryable<TEntity>, IQueryable<TEntity>> query)
+    public IEnumerable<TEntity> Query(QueryBuilder _qEntity)
     {
-        var queryable = Entities.Values.AsQueryable();
-        return query(queryable);
+        return Trans.Query<TEntity>(_qEntity);
     }
 
-    public bool AnyAsync(Func<TEntity, bool> predicate) => Entities.Values.Any(predicate);
+    public bool AnyAsync(Func<TEntity, bool> predicate)
+    {
+        return Entities.Values.Any(predicate);
+    }
 }

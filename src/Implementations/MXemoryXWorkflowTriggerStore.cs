@@ -1,6 +1,7 @@
 using Elsa.Persistence.Common.Implementations;
 using Elsa.Workflows.Persistence.Entities;
 using Elsa.Workflows.Persistence.Services;
+using Volte.Data.Dapper;
 
 namespace Elsa.Workflows.Persistence.Implementations;
 
@@ -27,22 +28,24 @@ public class MXemoryXWorkflowTriggerStore : IWorkflowTriggerStore
 
     public Task<IEnumerable<WorkflowTrigger>> FindManyByNameAsync(string name, string? hash, CancellationToken cancellationToken = default)
     {
-        var triggers = _store.Query(query =>
+
+        var _criteria = QueryBuilder<WorkflowTrigger>.Builder(_store.Trans);
+        _criteria.Where("Name", Operation.Equal, name);
+        if (!string.IsNullOrWhiteSpace(hash))
         {
-            query = query.Where(x => x.Name == name);
+            _criteria.Where("Hash", Operation.Equal, hash);
+        }
 
-            if (hash != null)
-                query = query.Where(x => x.Hash == hash);
-
-            return query;
-        });
+        var triggers = _store.Query(_criteria);
 
         return Task.FromResult<IEnumerable<WorkflowTrigger>>(triggers.ToList());
     }
 
     public Task<IEnumerable<WorkflowTrigger>> FindManyByWorkflowDefinitionIdAsync(string workflowDefinitionId, CancellationToken cancellationToken = default)
     {
-        var triggers = _store.Query(query => query.Where(x => x.WorkflowDefinitionId == workflowDefinitionId));
+        var _criteria = QueryBuilder<WorkflowTrigger>.Builder(_store.Trans);
+        _criteria.Where("WorkflowDefinitionId", Operation.Equal, workflowDefinitionId);
+        var triggers = _store.Query(_criteria);
         return Task.FromResult<IEnumerable<WorkflowTrigger>>(triggers.ToList());
     }
 
@@ -56,7 +59,13 @@ public class MXemoryXWorkflowTriggerStore : IWorkflowTriggerStore
 
     public Task DeleteManyAsync(IEnumerable<string> ids, CancellationToken cancellationToken = default)
     {
-        _store.DeleteMany(ids);
+        var _criteria = QueryBuilder<WorkflowTrigger>.Builder(_store.Trans);
+        foreach (string id in ids)
+        {
+            _criteria.OrWhereClause("Id", Operation.Equal, id);
+        }
+
+        _store.DeleteMany(_criteria);
         return Task.CompletedTask;
     }
 }

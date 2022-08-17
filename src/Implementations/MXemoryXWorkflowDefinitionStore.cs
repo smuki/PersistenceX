@@ -5,6 +5,7 @@ using Elsa.Workflows.Persistence.Entities;
 using Elsa.Workflows.Persistence.Extensions;
 using Elsa.Workflows.Persistence.Models;
 using Elsa.Workflows.Persistence.Services;
+using Volte.Data.Dapper;
 
 namespace Elsa.Workflows.Persistence.Implementations;
 
@@ -14,6 +15,7 @@ public class MXemoryXWorkflowDefinitionStore : IWorkflowDefinitionStore
     private readonly MXemoryXStore<WorkflowInstance> _instanceStore;
     private readonly MXemoryXStore<WorkflowTrigger> _triggerStore;
     private readonly MXemoryXStore<WorkflowBookmark> _bookmarkStore;
+    private Dictionary<string, object> where = new();
 
     public MXemoryXWorkflowDefinitionStore(
         MXemoryXStore<WorkflowDefinition> store,
@@ -29,19 +31,43 @@ public class MXemoryXWorkflowDefinitionStore : IWorkflowDefinitionStore
 
     public Task<WorkflowDefinition?> FindByIdAsync(string id, CancellationToken cancellationToken = default)
     {
-        var definition = _store.Find(x => x.Id == id);
+        var _criteria = QueryBuilder<WorkflowDefinition>.Builder(_store.Trans);
+        _criteria.Where("Id", Operation.Equal, id);
+
+        var definition = _store.Find(_criteria);
         return Task.FromResult(definition);
     }
-
+    //public KeyValuePair versionOptions(VersionOptions versionOptions)
+    //{
+    //    //if (versionOptions.IsDraft)
+    //    //    return predicate.And(x => !x.IsPublished);
+    //    //if (versionOptions.IsLatest)
+    //    //    return predicate.And(x => x.IsLatest);
+    //    //if (versionOptions.IsPublished)
+    //    //    return predicate.And(x => x.IsPublished);
+    //    //if (versionOptions.IsLatestOrPublished)
+    //    //    return predicate.And(x => x.IsPublished || x.IsLatest);
+    //    //if (versionOptions.Version > 0)
+    //    //    return predicate.And(x => x.Version == versionOptions.Version);
+    //    return null;
+    //}
     public Task<WorkflowDefinition?> FindByDefinitionIdAsync(string definitionId, VersionOptions versionOptions, CancellationToken cancellationToken = default)
     {
-        var definition = _store.Find(x => x.DefinitionId == definitionId && x.WithVersion(versionOptions));
+        var _criteria = QueryBuilder<WorkflowDefinition>.Builder(_store.Trans);
+        _criteria.Where("DefinitionId", Operation.Equal, definitionId);
+        //var definition = _store.Find(x => x.DefinitionId == definitionId && x.WithVersion(versionOptions));
+        var definition = _store.Find(_criteria);
+
         return Task.FromResult(definition);
     }
 
     public Task<WorkflowDefinition?> FindByNameAsync(string name, VersionOptions versionOptions, CancellationToken cancellationToken = default)
     {
-        var definition = _store.Find(x => x.Name == name && x.WithVersion(versionOptions));
+        var _criteria = QueryBuilder<WorkflowDefinition>.Builder(_store.Trans);
+        _criteria.Where("Name", Operation.Equal, name);
+        //var definition = _store.Find(x => x.Name == name && x.WithVersion(versionOptions));
+        var definition = _store.Find(_criteria);
+
         return Task.FromResult(definition);
     }
 
@@ -61,7 +87,10 @@ public class MXemoryXWorkflowDefinitionStore : IWorkflowDefinitionStore
 
     public Task<IEnumerable<WorkflowDefinition>> FindLatestAndPublishedByDefinitionIdAsync(string definitionId, CancellationToken cancellationToken = default)
     {
-        var definitions = _store.FindMany(x => x.DefinitionId == definitionId && (x.IsLatest || x.IsPublished));
+        var _criteria = QueryBuilder<WorkflowDefinition>.Builder(_store.Trans);
+        _criteria.Where("DefinitionId", Operation.Equal, definitionId);
+        //var definitions = _store.FindMany(x => x.DefinitionId == definitionId && (x.IsLatest || x.IsPublished));
+        var definitions = _store.FindMany(_criteria);
         return Task.FromResult(definitions);
     }
 
@@ -79,20 +108,42 @@ public class MXemoryXWorkflowDefinitionStore : IWorkflowDefinitionStore
 
     public Task<int> DeleteByDefinitionIdAsync(string definitionId, CancellationToken cancellationToken = default)
     {
-        _triggerStore.DeleteWhere(x => x.WorkflowDefinitionId == definitionId);
-        _instanceStore.DeleteWhere(x => x.DefinitionId == definitionId);
-        _bookmarkStore.DeleteWhere(x => x.WorkflowDefinitionId == definitionId);
-        var result = _store.DeleteWhere(x => x.DefinitionId == definitionId);
+
+        var _criteria = QueryBuilder<WorkflowDefinition>.Builder(_store.Trans);
+        _criteria.Where("WorkflowDefinitionId", Operation.Equal, definitionId);
+
+        _triggerStore.DeleteWhere(_criteria);
+        _bookmarkStore.DeleteWhere(_criteria);
+
+        var _criteria2 = QueryBuilder<WorkflowBookmark>.Builder(_store.Trans);
+        _criteria2.Where("DefinitionId", Operation.Equal, definitionId);
+
+        _instanceStore.DeleteWhere(_criteria2);
+        var result = _store.DeleteWhere(_criteria2);
         return Task.FromResult(result);
     }
 
     public Task<int> DeleteByDefinitionIdsAsync(IEnumerable<string> definitionIds, CancellationToken cancellationToken = default)
     {
         var definitionIdList = definitionIds.ToList();
-        _triggerStore.DeleteWhere(x => definitionIdList.Contains(x.WorkflowDefinitionId));
-        _instanceStore.DeleteWhere(x => definitionIdList.Contains(x.DefinitionId));
-        _bookmarkStore.DeleteWhere(x => definitionIdList.Contains(x.WorkflowDefinitionId));
-        var result = _store.DeleteWhere(x => definitionIdList.Contains(x.DefinitionId));
+
+        var _criteria = QueryBuilder<WorkflowInstance>.Builder(_store.Trans);
+        foreach (string id in definitionIdList)
+        {
+            _criteria.OrWhereClause("WorkflowDefinitionId", Operation.Equal, id);
+        }
+
+        _triggerStore.DeleteWhere(_criteria);
+        _bookmarkStore.DeleteWhere(_criteria);
+
+        var _criteria2 = QueryBuilder<WorkflowInstance>.Builder(_store.Trans);
+        foreach (string id in definitionIdList)
+        {
+            _criteria2.OrWhereClause("DefinitionId", Operation.Equal, id);
+        }
+
+        _instanceStore.DeleteWhere(_criteria2);
+        var result = _store.DeleteWhere(_criteria2);
         return Task.FromResult(result);
     }
 
