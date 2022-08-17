@@ -1,6 +1,6 @@
-using Elsa.Workflows.Persistence.Entities;
+using Elsa.Workflows.VoltePersistence.Entities;
 
-namespace Elsa.Workflows.Persistence.Services;
+namespace Elsa.Workflows.VoltePersistence.Services;
 
 public interface IWorkflowTriggerStore
 {

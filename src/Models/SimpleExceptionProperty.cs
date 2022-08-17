@@ -1,4 +1,4 @@
-namespace Elsa.Workflows.Persistence.Models
+namespace Elsa.Workflows.VoltePersistence.Models
 {
     public class SimpleExceptionProperty
     {

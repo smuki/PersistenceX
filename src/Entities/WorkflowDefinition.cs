@@ -1,7 +1,7 @@
 using Elsa.Persistence.Common.Entities;
 using Elsa.Workflows.Core.Models;
 
-namespace Elsa.Workflows.Persistence.Entities;
+namespace Elsa.Workflows.VoltePersistence.Entities;
 
 /// <summary>
 /// Represents a workflow definition.

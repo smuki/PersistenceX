@@ -1,10 +1,10 @@
 using Elsa.Persistence.Common.Entities;
 using Elsa.Persistence.Common.Models;
 using Elsa.Workflows.Core.Models;
-using Elsa.Workflows.Persistence.Entities;
-using Elsa.Workflows.Persistence.Models;
+using Elsa.Workflows.VoltePersistence.Entities;
+using Elsa.Workflows.VoltePersistence.Models;
 
-namespace Elsa.Workflows.Persistence.Services;
+namespace Elsa.Workflows.VoltePersistence.Services;
 
 public interface IWorkflowInstanceStore
 {

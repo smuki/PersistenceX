@@ -3,13 +3,14 @@ using Elsa.Features.Attributes;
 using Elsa.Features.Services;
 using Elsa.Persistence.Common.Extensions;
 using Elsa.Workflows.Core.Features;
-using Elsa.Workflows.Persistence.Entities;
-using Elsa.Workflows.Persistence.Extensions;
-using Elsa.Workflows.Persistence.Implementations;
-using Elsa.Workflows.Persistence.Services;
+using Elsa.Workflows.VoltePersistence.Entities;
+using Elsa.Workflows.VoltePersistence.Extensions;
+using Elsa.Workflows.VoltePersistence.Implementations;
+using Elsa.Workflows.VoltePersistence.Services;
 using Microsoft.Extensions.DependencyInjection;
+using Volte.Data.Dapper;
 
-namespace Elsa.Workflows.Persistence.Features;
+namespace Elsa.Workflows.VoltePersistence.Features;
 
 [DependsOn(typeof(WorkflowsFeature))]
 public class WorkflowPersistenceFeature : FeatureBase
@@ -56,13 +57,13 @@ public class WorkflowPersistenceFeature : FeatureBase
 
     public override void Apply() =>
         Services
+            .AddTransient<IDbContext, DbContext>()
             .AddVolteStore<WorkflowDefinition, VolteWorkflowDefinitionStore>()
             .AddVolteStore<WorkflowInstance, VolteWorkflowInstanceStore>()
             .AddVolteStore<WorkflowBookmark, VolteWorkflowBookmarkStore>()
             .AddVolteStore<WorkflowTrigger, VolteWorkflowTriggerStore>()
             .AddVolteStore<WorkflowExecutionLogRecord, VolteWorkflowExecutionLogStore>()
             .AddSingleton(WorkflowDefinitionStore)
-            .AddSingleton(WorkflowInstanceStore)
             .AddSingleton(WorkflowInstanceStore)
             .AddSingleton(WorkflowBookmarkStore)
             .AddSingleton(WorkflowTriggerStore)

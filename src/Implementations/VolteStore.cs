@@ -1,7 +1,7 @@
 using Elsa.Persistence.Common.Entities;
 using Volte.Data.Dapper;
 
-namespace Elsa.Workflows.Persistence.Implementations;
+namespace Elsa.Workflows.VoltePersistence.Implementations;
 
 public class VolteStore<TEntity> where TEntity : Entity
 {
@@ -10,6 +10,8 @@ public class VolteStore<TEntity> where TEntity : Entity
     public VolteStore(IDbContext DbContext)
     {
         this.Trans = DbContext;
+        this.Trans.Open("master");
+
     }
 
     public void Open()

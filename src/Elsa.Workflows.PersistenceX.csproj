@@ -12,7 +12,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Volte.Data.Dapper" Version="1.0.16" />
+      <PackageReference Include="Volte.Data.Dapper" Version="1.0.17" />
+      <PackageReference Include="Volte.Data.VolteDi" Version="1.0.8" />
     </ItemGroup>
     
 </Project>

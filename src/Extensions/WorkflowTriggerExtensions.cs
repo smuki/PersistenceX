@@ -1,8 +1,8 @@
 using Elsa.Workflows.Core.Helpers;
 using Elsa.Workflows.Core.Services;
-using Elsa.Workflows.Persistence.Entities;
+using Elsa.Workflows.VoltePersistence.Entities;
 
-namespace Elsa.Workflows.Persistence.Extensions;
+namespace Elsa.Workflows.VoltePersistence.Extensions;
 
 public static class WorkflowTriggerExtensions
 {

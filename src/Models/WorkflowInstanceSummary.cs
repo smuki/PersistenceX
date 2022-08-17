@@ -1,7 +1,7 @@
 using Elsa.Workflows.Core.Models;
-using Elsa.Workflows.Persistence.Entities;
+using Elsa.Workflows.VoltePersistence.Entities;
 
-namespace Elsa.Workflows.Persistence.Models;
+namespace Elsa.Workflows.VoltePersistence.Models;
 
 public record WorkflowInstanceSummary(
     string Id,

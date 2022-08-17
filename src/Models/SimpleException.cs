@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 
-namespace Elsa.Workflows.Persistence.Models
+namespace Elsa.Workflows.VoltePersistence.Models
 {
     public class SimpleException
     {
