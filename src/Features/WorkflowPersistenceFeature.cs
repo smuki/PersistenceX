@@ -56,12 +56,13 @@ public class WorkflowPersistenceFeature : FeatureBase
 
     public override void Apply() =>
         Services
-            .AddMXemoryXStore<WorkflowDefinition, VolteWorkflowDefinitionStore>()
-            .AddMXemoryXStore<WorkflowInstance, VolteWorkflowInstanceStore>()
-            .AddMXemoryXStore<WorkflowBookmark, VolteWorkflowBookmarkStore>()
-            .AddMXemoryXStore<WorkflowTrigger, VolteWorkflowTriggerStore>()
-            .AddMXemoryXStore<WorkflowExecutionLogRecord, VolteWorkflowExecutionLogStore>()
+            .AddVolteStore<WorkflowDefinition, VolteWorkflowDefinitionStore>()
+            .AddVolteStore<WorkflowInstance, VolteWorkflowInstanceStore>()
+            .AddVolteStore<WorkflowBookmark, VolteWorkflowBookmarkStore>()
+            .AddVolteStore<WorkflowTrigger, VolteWorkflowTriggerStore>()
+            .AddVolteStore<WorkflowExecutionLogRecord, VolteWorkflowExecutionLogStore>()
             .AddSingleton(WorkflowDefinitionStore)
+            .AddSingleton(WorkflowInstanceStore)
             .AddSingleton(WorkflowInstanceStore)
             .AddSingleton(WorkflowBookmarkStore)
             .AddSingleton(WorkflowTriggerStore)
