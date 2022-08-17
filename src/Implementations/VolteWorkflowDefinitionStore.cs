@@ -9,19 +9,19 @@ using Volte.Data.Dapper;
 
 namespace Elsa.Workflows.Persistence.Implementations;
 
-public class MXemoryXWorkflowDefinitionStore : IWorkflowDefinitionStore
+public class VolteWorkflowDefinitionStore : IWorkflowDefinitionStore
 {
-    private readonly MXemoryXStore<WorkflowDefinition> _store;
-    private readonly MXemoryXStore<WorkflowInstance> _instanceStore;
-    private readonly MXemoryXStore<WorkflowTrigger> _triggerStore;
-    private readonly MXemoryXStore<WorkflowBookmark> _bookmarkStore;
+    private readonly VolteStore<WorkflowDefinition> _store;
+    private readonly VolteStore<WorkflowInstance> _instanceStore;
+    private readonly VolteStore<WorkflowTrigger> _triggerStore;
+    private readonly VolteStore<WorkflowBookmark> _bookmarkStore;
     private Dictionary<string, object> where = new();
 
-    public MXemoryXWorkflowDefinitionStore(
-        MXemoryXStore<WorkflowDefinition> store,
-        MXemoryXStore<WorkflowInstance> instanceStore,
-        MXemoryXStore<WorkflowTrigger> triggerStore,
-        MXemoryXStore<WorkflowBookmark> bookmarkStore)
+    public VolteWorkflowDefinitionStore(
+        VolteStore<WorkflowDefinition> store,
+        VolteStore<WorkflowInstance> instanceStore,
+        VolteStore<WorkflowTrigger> triggerStore,
+        VolteStore<WorkflowBookmark> bookmarkStore)
     {
         _store = store;
         _instanceStore = instanceStore;

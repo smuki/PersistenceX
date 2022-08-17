@@ -3,11 +3,11 @@ using Volte.Data.Dapper;
 
 namespace Elsa.Workflows.Persistence.Implementations;
 
-public class MXemoryXStore<TEntity> where TEntity : Entity
+public class VolteStore<TEntity> where TEntity : Entity
 {
     public IDbContext Trans { get; private set; }
 
-    public MXemoryXStore(IDbContext DbContext)
+    public VolteStore(IDbContext DbContext)
     {
         this.Trans = DbContext;
     }

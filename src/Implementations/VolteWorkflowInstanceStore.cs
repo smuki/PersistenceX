@@ -8,11 +8,11 @@ using Volte.Data.Dapper;
 
 namespace Elsa.Workflows.Persistence.Implementations;
 
-public class MXemoryXWorkflowInstanceStore : IWorkflowInstanceStore
+public class VolteWorkflowInstanceStore : IWorkflowInstanceStore
 {
-    private readonly MXemoryXStore<WorkflowInstance> _store;
+    private readonly VolteStore<WorkflowInstance> _store;
 
-    public MXemoryXWorkflowInstanceStore(MXemoryXStore<WorkflowInstance> store)
+    public VolteWorkflowInstanceStore(VolteStore<WorkflowInstance> store)
     {
         _store = store;
     }

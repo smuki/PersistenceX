@@ -5,11 +5,11 @@ using Volte.Data.Dapper;
 
 namespace Elsa.Workflows.Persistence.Implementations;
 
-public class MXemoryXWorkflowTriggerStore : IWorkflowTriggerStore
+public class VolteWorkflowTriggerStore : IWorkflowTriggerStore
 {
-    private readonly MXemoryXStore<WorkflowTrigger> _store;
+    private readonly VolteStore<WorkflowTrigger> _store;
 
-    public MXemoryXWorkflowTriggerStore(MXemoryXStore<WorkflowTrigger> store)
+    public VolteWorkflowTriggerStore(VolteStore<WorkflowTrigger> store)
     {
         _store = store;
     }

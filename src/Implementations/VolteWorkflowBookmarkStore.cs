@@ -5,11 +5,11 @@ using Volte.Data.Dapper;
 
 namespace Elsa.Workflows.Persistence.Implementations;
 
-public class MXemoryXWorkflowBookmarkStore : IWorkflowBookmarkStore
+public class VolteWorkflowBookmarkStore : IWorkflowBookmarkStore
 {
-    private readonly MXemoryXStore<WorkflowBookmark> _store;
+    private readonly VolteStore<WorkflowBookmark> _store;
 
-    public MXemoryXWorkflowBookmarkStore(MXemoryXStore<WorkflowBookmark> store)
+    public VolteWorkflowBookmarkStore(VolteStore<WorkflowBookmark> store)
     {
         _store = store;
     }

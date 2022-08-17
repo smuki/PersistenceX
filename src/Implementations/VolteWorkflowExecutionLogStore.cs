@@ -7,11 +7,11 @@ using Volte.Data.Dapper;
 
 namespace Elsa.Workflows.Persistence.Implementations;
 
-public class MXemoryXWorkflowExecutionLogStore : IWorkflowExecutionLogStore
+public class VolteWorkflowExecutionLogStore : IWorkflowExecutionLogStore
 {
-    private readonly MXemoryXStore<WorkflowExecutionLogRecord> _store;
+    private readonly VolteStore<WorkflowExecutionLogRecord> _store;
 
-    public MXemoryXWorkflowExecutionLogStore(MXemoryXStore<WorkflowExecutionLogRecord> store)
+    public VolteWorkflowExecutionLogStore(VolteStore<WorkflowExecutionLogRecord> store)
     {
         _store = store;
     }

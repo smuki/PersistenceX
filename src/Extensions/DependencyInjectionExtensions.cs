@@ -16,7 +16,7 @@ public static class DependencyInjectionExtensions
     }
     public static IServiceCollection AddMXemoryXStore<TEntity, TStore>(this IServiceCollection services) where TEntity : Entity where TStore : class
     {
-        services.TryAddSingleton<MXemoryXStore<TEntity>>();
+        services.TryAddSingleton<VolteStore<TEntity>>();
         services.TryAddSingleton<TStore>();
         return services;
     }
