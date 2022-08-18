@@ -32,7 +32,6 @@ public class VolteWorkflowBookmarkStore : IWorkflowBookmarkStore
     {
         var _criteria = new Query(_tableName);
 
-        //var _criteria = QueryBuilder<WorkflowBookmark>.Builder(_store.Trans);
         _criteria.Where("Id", "=", id);
 
         var bookmark = _store.Find(_criteria);
@@ -66,8 +65,8 @@ public class VolteWorkflowBookmarkStore : IWorkflowBookmarkStore
 
     public Task<bool> DeleteAsync(string id, CancellationToken cancellationToken = default)
     {
-        var _criteria = QueryBuilder<WorkflowBookmark>.Builder(_store.Trans);
-        _criteria.Where("Id", Operation.Equal, id);
+        var _criteria = new Query(_tableName);
+        _criteria.Where("Id", "=", id);
 
         var result = _store.Delete(_criteria);
         return Task.FromResult(result);
