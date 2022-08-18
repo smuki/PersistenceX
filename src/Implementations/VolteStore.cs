@@ -50,16 +50,15 @@ public class VolteStore<TEntity> where TEntity : Entity
         return Trans.Query<TEntity>(_qEntity);
     }
 
-    public bool Delete(QueryBuilder _qEntity)
+    public bool Delete(Query _qEntity)
     {
 
-        return Trans.Delete<TEntity>(_qEntity);
+        return Trans.DeleteAsync<TEntity>(_qEntity).Result>0;
     }
 
     public int DeleteWhere(Query _qEntity)
     {
         return Trans.DeleteAsync<TEntity>(_qEntity).Result;
-        return 1;
     }
 
     public int DeleteMany(Query _qEntity)
