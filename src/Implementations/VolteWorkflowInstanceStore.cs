@@ -42,8 +42,8 @@ public class VolteWorkflowInstanceStore : IWorkflowInstanceStore
 
     public Task<bool> DeleteAsync(string id, CancellationToken cancellationToken = default)
     {
-        var _criteria = QueryBuilder<WorkflowInstance>.Builder(_store.Trans);
-        _criteria.Where("Id", Operation.Equal, id);
+        var _criteria = new Query(_tableName);
+        _criteria.Where("Id", "=", id);
 
         var success = _store.Delete(_criteria);
         return Task.FromResult(success);
