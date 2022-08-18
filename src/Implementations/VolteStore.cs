@@ -1,5 +1,7 @@
 using Elsa.Persistence.Common.Entities;
+using Elsa.Workflows.Persistence.Entities;
 using Volte.Data.Dapper;
+using Volte.Data.SqlKata;
 
 namespace Elsa.Workflows.Persistence.Implementations;
 
@@ -33,13 +35,13 @@ public class VolteStore<TEntity> where TEntity : Entity
         }
     }
 
-    public TEntity? Find(QueryBuilder _qEntity)
+    public TEntity? Find(Query _qEntity)
     {
-        return Trans.SingleOrDefault<TEntity>(_qEntity);
+        return Trans.SingleOrDefault<TEntity>(_qEntity).Result;
     }
-    public IEnumerable<TEntity> FindMany(QueryBuilder _qEntity)
+    public IEnumerable<TEntity> FindMany(Query _qEntity)
     {
-        return Trans.Query<TEntity>(_qEntity);
+        return Trans.QueryAsync<TEntity>(_qEntity).Result;
     }
     public IEnumerable<TEntity> List()
     {
@@ -54,16 +56,15 @@ public class VolteStore<TEntity> where TEntity : Entity
         return Trans.Delete<TEntity>(_qEntity);
     }
 
-    public int DeleteWhere(QueryBuilder _qEntity)
+    public int DeleteWhere(Query _qEntity)
     {
-
-        Trans.Delete<TEntity>(_qEntity);
+        return Trans.DeleteAsync<TEntity>(_qEntity).Result;
         return 1;
     }
 
-    public int DeleteMany(QueryBuilder _qEntity)
+    public int DeleteMany(Query _qEntity)
     {
-        Trans.Delete<TEntity>(_qEntity);
+        Trans.DeleteAsync<TEntity>(_qEntity);
         return 1;
     }
 
@@ -81,9 +82,9 @@ public class VolteStore<TEntity> where TEntity : Entity
         return count;
     }
 
-    public IEnumerable<TEntity> Query(QueryBuilder _qEntity)
+    public IEnumerable<TEntity> Query(Query _qEntity)
     {
-        return Trans.Query<TEntity>(_qEntity);
+        return Trans.QueryAsync<TEntity>(_qEntity).Result;
     }
 
     public bool AnyAsync(Func<TEntity, bool> predicate)

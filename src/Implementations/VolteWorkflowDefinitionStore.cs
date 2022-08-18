@@ -6,6 +6,7 @@ using Elsa.Workflows.Persistence.Extensions;
 using Elsa.Workflows.Persistence.Models;
 using Elsa.Workflows.Persistence.Services;
 using Volte.Data.Dapper;
+using Volte.Data.SqlKata;
 
 namespace Elsa.Workflows.Persistence.Implementations;
 
@@ -16,6 +17,7 @@ public class VolteWorkflowDefinitionStore : IWorkflowDefinitionStore
     private readonly VolteStore<WorkflowTrigger> _triggerStore;
     private readonly VolteStore<WorkflowBookmark> _bookmarkStore;
     private Dictionary<string, object> where = new();
+    const string _tableName = "Workflow_Definition";
 
     public VolteWorkflowDefinitionStore(
         VolteStore<WorkflowDefinition> store,
@@ -31,8 +33,9 @@ public class VolteWorkflowDefinitionStore : IWorkflowDefinitionStore
 
     public Task<WorkflowDefinition?> FindByIdAsync(string id, CancellationToken cancellationToken = default)
     {
-        var _criteria = QueryBuilder<WorkflowDefinition>.Builder(_store.Trans);
-        _criteria.Where("Id", Operation.Equal, id);
+        var _criteria = new Query(_tableName);
+
+        _criteria.Where("Id", "=", id);
 
         var definition = _store.Find(_criteria);
         return Task.FromResult(definition);
@@ -53,8 +56,10 @@ public class VolteWorkflowDefinitionStore : IWorkflowDefinitionStore
     //}
     public Task<WorkflowDefinition?> FindByDefinitionIdAsync(string definitionId, VersionOptions versionOptions, CancellationToken cancellationToken = default)
     {
-        var _criteria = QueryBuilder<WorkflowDefinition>.Builder(_store.Trans);
-        _criteria.Where("DefinitionId", Operation.Equal, definitionId);
+        var _criteria = new Query(_tableName);
+
+        //var _criteria = QueryBuilder<WorkflowDefinition>.Builder(_store.Trans);
+        _criteria.Where("DefinitionId", "=", definitionId);
         //var definition = _store.Find(x => x.DefinitionId == definitionId && x.WithVersion(versionOptions));
         var definition = _store.Find(_criteria);
 
@@ -63,8 +68,10 @@ public class VolteWorkflowDefinitionStore : IWorkflowDefinitionStore
 
     public Task<WorkflowDefinition?> FindByNameAsync(string name, VersionOptions versionOptions, CancellationToken cancellationToken = default)
     {
-        var _criteria = QueryBuilder<WorkflowDefinition>.Builder(_store.Trans);
-        _criteria.Where("Name", Operation.Equal, name);
+        var _criteria = new Query(_tableName);
+
+        //var _criteria = QueryBuilder<WorkflowDefinition>.Builder(_store.Trans);
+        _criteria.Where("Name", "=", name);
         //var definition = _store.Find(x => x.Name == name && x.WithVersion(versionOptions));
         var definition = _store.Find(_criteria);
 
@@ -87,8 +94,10 @@ public class VolteWorkflowDefinitionStore : IWorkflowDefinitionStore
 
     public Task<IEnumerable<WorkflowDefinition>> FindLatestAndPublishedByDefinitionIdAsync(string definitionId, CancellationToken cancellationToken = default)
     {
-        var _criteria = QueryBuilder<WorkflowDefinition>.Builder(_store.Trans);
-        _criteria.Where("DefinitionId", Operation.Equal, definitionId);
+        var _criteria = new Query(_tableName);
+
+        //var _criteria = QueryBuilder<WorkflowDefinition>.Builder(_store.Trans);
+        _criteria.Where("DefinitionId", "=", definitionId);
         //var definitions = _store.FindMany(x => x.DefinitionId == definitionId && (x.IsLatest || x.IsPublished));
         var definitions = _store.FindMany(_criteria);
         return Task.FromResult(definitions);
@@ -108,15 +117,15 @@ public class VolteWorkflowDefinitionStore : IWorkflowDefinitionStore
 
     public Task<int> DeleteByDefinitionIdAsync(string definitionId, CancellationToken cancellationToken = default)
     {
+        var _criteria = new Query(_tableName);
 
-        var _criteria = QueryBuilder<WorkflowDefinition>.Builder(_store.Trans);
-        _criteria.Where("WorkflowDefinitionId", Operation.Equal, definitionId);
+        _criteria.Where("WorkflowDefinitionId", "=", definitionId);
 
         _triggerStore.DeleteWhere(_criteria);
         _bookmarkStore.DeleteWhere(_criteria);
 
-        var _criteria2 = QueryBuilder<WorkflowBookmark>.Builder(_store.Trans);
-        _criteria2.Where("DefinitionId", Operation.Equal, definitionId);
+        var _criteria2 = new Query(_tableName);
+        _criteria2.Where("DefinitionId", "=", definitionId);
 
         _instanceStore.DeleteWhere(_criteria2);
         var result = _store.DeleteWhere(_criteria2);
@@ -127,19 +136,19 @@ public class VolteWorkflowDefinitionStore : IWorkflowDefinitionStore
     {
         var definitionIdList = definitionIds.ToList();
 
-        var _criteria = QueryBuilder<WorkflowInstance>.Builder(_store.Trans);
+        var _criteria = new Query(_tableName);
         foreach (string id in definitionIdList)
         {
-            _criteria.OrWhereClause("WorkflowDefinitionId", Operation.Equal, id);
+            _criteria.OrWhere("WorkflowDefinitionId", "=", id);
         }
 
         _triggerStore.DeleteWhere(_criteria);
         _bookmarkStore.DeleteWhere(_criteria);
 
-        var _criteria2 = QueryBuilder<WorkflowInstance>.Builder(_store.Trans);
+        var _criteria2 = new Query(_tableName);
         foreach (string id in definitionIdList)
         {
-            _criteria2.OrWhereClause("DefinitionId", Operation.Equal, id);
+            _criteria2.OrWhere("DefinitionId", "=", id);
         }
 
         _instanceStore.DeleteWhere(_criteria2);

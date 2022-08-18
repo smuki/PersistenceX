@@ -1,9 +1,12 @@
 using Elsa.Persistence.Common.Entities;
 using Elsa.Workflows.Core.Models;
+using Newtonsoft.Json;
+using Volte.Data.Dapper;
+using Volte.Data.Json;
 
 namespace Elsa.Workflows.Persistence.Entities;
 
-public class WorkflowBookmark : Entity
+public class WorkflowBookmark : Entity, IDataObject
 {
     public string Name { get; init; } = default!;
     public string? Hash { get; set; }
@@ -31,4 +34,22 @@ public class WorkflowBookmark : Entity
             ActivityInstanceId = bookmark.ActivityInstanceId,
             CallbackMethodName = bookmark.CallbackMethodName
         };
+
+    //----------------------------------
+    //----------------------------------
+    [AttributeMapping(Indexes = true, PrimaryKey = true)]
+    public string Id { get; set; }
+
+    [AttributeMapping(Indexes = true)]
+    public string sCorporation { get; set; }
+
+    [AttributeMapping(Ignore = true)]
+    [JsonIgnore]
+    public string Content { get; set; }
+
+    [AttributeMapping(Ignore = true)]
+    [JsonIgnore]
+    public DataState State { get; set; }
+    public int Version { get; set; }
+
 }

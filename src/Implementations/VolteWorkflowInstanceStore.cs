@@ -5,13 +5,14 @@ using Elsa.Workflows.Persistence.Entities;
 using Elsa.Workflows.Persistence.Models;
 using Elsa.Workflows.Persistence.Services;
 using Volte.Data.Dapper;
+using Volte.Data.SqlKata;
 
 namespace Elsa.Workflows.Persistence.Implementations;
 
 public class VolteWorkflowInstanceStore : IWorkflowInstanceStore
 {
     private readonly VolteStore<WorkflowInstance> _store;
-
+    const string _tableName = "Workflow_Instance";
     public VolteWorkflowInstanceStore(VolteStore<WorkflowInstance> store)
     {
         _store = store;
@@ -19,8 +20,8 @@ public class VolteWorkflowInstanceStore : IWorkflowInstanceStore
 
     public Task<WorkflowInstance?> FindByIdAsync(string id, CancellationToken cancellationToken = default)
     {
-        var _criteria = QueryBuilder<WorkflowInstance>.Builder(_store.Trans);
-        _criteria.Where("Id", Operation.Equal, id);
+        var _criteria = new Query(_tableName);
+        _criteria.Where("Id", "=", id);
 
         var instance = _store.Find(_criteria);
 
@@ -29,7 +30,7 @@ public class VolteWorkflowInstanceStore : IWorkflowInstanceStore
 
     public Task SaveAsync(WorkflowInstance record, CancellationToken cancellationToken = default)
     {
-        _store.Save(record);
+         _store.Save(record);
         return Task.CompletedTask;
     }
 
@@ -50,10 +51,11 @@ public class VolteWorkflowInstanceStore : IWorkflowInstanceStore
 
     public Task<int> DeleteManyAsync(IEnumerable<string> ids, CancellationToken cancellationToken = default)
     {
-        var _criteria = QueryBuilder<WorkflowInstance>.Builder(_store.Trans);
+        var _criteria = new Query(_tableName);
+
         foreach (string id in ids)
         {
-            _criteria.OrWhereClause("Id", Operation.Equal, id);
+            _criteria.OrWhere("Id", "=", id);
         }
 
         var count = _store.DeleteMany(_criteria);
@@ -62,8 +64,9 @@ public class VolteWorkflowInstanceStore : IWorkflowInstanceStore
 
     public Task DeleteManyByDefinitionIdAsync(string definitionId, CancellationToken cancellationToken = default)
     {
-        var _criteria = QueryBuilder<WorkflowInstance>.Builder(_store.Trans);
-        _criteria.Where("DefinitionId", Operation.Equal, definitionId);
+        var _criteria = new Query(_tableName);
+
+        _criteria.Where("DefinitionId","=", definitionId);
 
         _store.DeleteWhere(_criteria);
         return Task.CompletedTask;
@@ -102,13 +105,13 @@ public class VolteWorkflowInstanceStore : IWorkflowInstanceStore
                 select instance;
         }
 
-        query = orderBy switch
-        {
-            OrderBy.Finished => orderDirection == OrderDirection.Ascending ? query.OrderBy(x => x.FinishedAt) : query.OrderByDescending(x => x.FinishedAt),
-            OrderBy.LastExecuted => orderDirection == OrderDirection.Ascending ? query.OrderBy(x => x.LastExecutedAt) : query.OrderByDescending(x => x.LastExecutedAt),
-            OrderBy.Created => orderDirection == OrderDirection.Ascending ? query.OrderBy(x => x.CreatedAt) : query.OrderByDescending(x => x.CreatedAt),
-            _ => query
-        };
+        //query = orderBy switch
+        //{
+        //    OrderBy.Finished => orderDirection == OrderDirection.Ascending ? query.OrderBy(x => x.FinishedAt) : query.OrderByDescending(x => x.FinishedAt),
+        //    OrderBy.LastExecuted => orderDirection == OrderDirection.Ascending ? query.OrderBy(x => x.LastExecutedAt) : query.OrderByDescending(x => x.LastExecutedAt),
+        //    OrderBy.Created => orderDirection == OrderDirection.Ascending ? query.OrderBy(x => x.CreatedAt) : query.OrderByDescending(x => x.CreatedAt),
+        //    _ => query
+        //};
 
         var totalCount = query.Count();
 

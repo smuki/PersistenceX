@@ -4,12 +4,14 @@ using Elsa.Persistence.Common.Models;
 using Elsa.Workflows.Persistence.Entities;
 using Elsa.Workflows.Persistence.Services;
 using Volte.Data.Dapper;
+using Volte.Data.SqlKata;
 
 namespace Elsa.Workflows.Persistence.Implementations;
 
 public class VolteWorkflowExecutionLogStore : IWorkflowExecutionLogStore
 {
     private readonly VolteStore<WorkflowExecutionLogRecord> _store;
+    const string _tableName = "Workflow_ExecutionLog_Record";
 
     public VolteWorkflowExecutionLogStore(VolteStore<WorkflowExecutionLogRecord> store)
     {
@@ -30,15 +32,15 @@ public class VolteWorkflowExecutionLogStore : IWorkflowExecutionLogStore
 
     public Task<Page<WorkflowExecutionLogRecord>> FindManyByWorkflowInstanceIdAsync(string workflowInstanceId, PageArgs? pageArgs = default, CancellationToken cancellationToken = default)
     {
+        var _criteria = new Query(_tableName);
 
-        var _criteria = QueryBuilder<WorkflowExecutionLogRecord>.Builder(_store.Trans);
-            _criteria.Where("WorkflowInstanceId", Operation.Equal, workflowInstanceId);
+        _criteria.Where("WorkflowInstanceId", "=", workflowInstanceId);
         _criteria.OrderBy("Timestamp");
 
         var page = _store
             .FindMany(_criteria)
             .Paginate();
-        
+
         return Task.FromResult(page);
     }
 }
