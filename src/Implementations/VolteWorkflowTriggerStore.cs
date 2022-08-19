@@ -62,13 +62,19 @@ public class VolteWorkflowTriggerStore : IWorkflowTriggerStore
 
     public Task DeleteManyAsync(IEnumerable<string> ids, CancellationToken cancellationToken = default)
     {
-        var _criteria = new Query(_tableName);
-        foreach (string id in ids)
+        if (ids.Any())
         {
-            _criteria.OrWhere("Id", "=", id);
+            var _criteria = new Query(_tableName);
+            foreach (string id in ids)
+            {
+                _criteria.OrWhere("Id", "=", id);
+            }
+            _store.DeleteMany(_criteria);
+            return Task.CompletedTask;
         }
-
-        _store.DeleteMany(_criteria);
-        return Task.CompletedTask;
+        else
+        {
+            return Task.CompletedTask;
+        }
     }
 }

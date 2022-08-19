@@ -74,14 +74,21 @@ public class VolteWorkflowBookmarkStore : IWorkflowBookmarkStore
 
     public Task<int> DeleteManyAsync(IEnumerable<string> ids, CancellationToken cancellationToken = default)
     {
-        var _criteria = new Query(_tableName);
-
-        foreach (string id in ids)
+        if (ids.Any())
         {
-            _criteria.OrWhere("Id", "=", id);
-        }
+            var _criteria = new Query(_tableName);
 
-        var result = _store.DeleteMany(_criteria);
-        return Task.FromResult(result);
+            foreach (string id in ids)
+            {
+                _criteria.OrWhere("Id", "=", id);
+            }
+
+            var result = _store.DeleteMany(_criteria);
+            return Task.FromResult(result);
+        }
+        else
+        {
+            return Task.FromResult(0);
+        }
     }
 }

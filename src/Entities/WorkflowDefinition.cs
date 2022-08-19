@@ -9,6 +9,10 @@ namespace Elsa.Workflows.Persistence.Entities;
 /// <summary>
 /// Represents a workflow definition.
 /// </summary>
+/// 
+[Serializable]
+[AttributeMapping(TableName = "workflow_definition", Document = true)]
+
 public class WorkflowDefinition : VersionedEntity, IDataObject
 {
     public string DefinitionId { get; set; } = default!;
@@ -48,7 +52,7 @@ public class WorkflowDefinition : VersionedEntity, IDataObject
     [AttributeMapping(Indexes = true)]
     public string sCorporation { get; set; }
 
-    [AttributeMapping(Ignore = true)]
+    [AttributeMapping(Ignore = true, ColumnName = "$Content")]
     [JsonIgnore]
     public string Content { get; set; }
 

@@ -5,6 +5,8 @@ using Volte.Data.Json;
 
 namespace Elsa.Workflows.Persistence.Entities
 {
+    [Serializable]
+    [AttributeMapping(TableName = "workflow_executionlog_record", Document = true)]
     public class WorkflowExecutionLogRecord : Entity, IDataObject
     {
         public string WorkflowDefinitionId { get; set; } = default!;
@@ -27,7 +29,7 @@ namespace Elsa.Workflows.Persistence.Entities
         [AttributeMapping(Indexes = true)]
         public string sCorporation { get; set; }
 
-        [AttributeMapping(Ignore = true)]
+        [AttributeMapping(Ignore = true, ColumnName = "$Content")]
         [JsonIgnore]
         public string Content { get; set; }
 

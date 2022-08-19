@@ -8,6 +8,8 @@ namespace Elsa.Workflows.Persistence.Entities;
 /// <summary>
 /// Represents a trigger associated with a workflow definition.
 /// </summary>
+[Serializable]
+[AttributeMapping(TableName = "workflow_trigger", Document = true)]
 public class WorkflowTrigger : Entity, IDataObject
 {
     public string WorkflowDefinitionId { get; set; } = default!;
@@ -22,7 +24,7 @@ public class WorkflowTrigger : Entity, IDataObject
     [AttributeMapping(Indexes = true)]
     public string sCorporation { get; set; }
 
-    [AttributeMapping(Ignore = true)]
+    [AttributeMapping(Ignore = true, ColumnName = "$Content")]
     [JsonIgnore]
     public string Content { get; set; }
 
