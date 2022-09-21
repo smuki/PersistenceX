@@ -1,5 +1,5 @@
 using Elsa.Features.Services;
-using Elsa.Persistence.Common.Entities;
+using Elsa.Common.Entities;
 using Elsa.Workflows.Persistence.Features;
 using Elsa.Workflows.Persistence.Implementations;
 using Microsoft.Extensions.DependencyInjection;

@@ -1,7 +1,7 @@
 using Elsa.Features.Abstractions;
 using Elsa.Features.Attributes;
 using Elsa.Features.Services;
-using Elsa.Persistence.Common.Extensions;
+using Elsa.Common.Extensions;
 using Elsa.Workflows.Core.Features;
 using Elsa.Workflows.Persistence.Entities;
 using Elsa.Workflows.Persistence.Extensions;

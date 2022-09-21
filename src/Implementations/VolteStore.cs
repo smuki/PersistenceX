@@ -1,4 +1,4 @@
-using Elsa.Persistence.Common.Entities;
+using Elsa.Common.Entities;
 using Elsa.Workflows.Persistence.Entities;
 using Volte.Data.Dapper;
 using Volte.Data.SqlKata;

@@ -1,5 +1,5 @@
-using Elsa.Persistence.Common.Entities;
-using Elsa.Persistence.Common.Models;
+using Elsa.Common.Entities;
+using Elsa.Common.Models;
 using Elsa.Workflows.Core.Models;
 using Elsa.Workflows.Persistence.Entities;
 using Elsa.Workflows.Persistence.Models;

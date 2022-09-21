@@ -1,4 +1,4 @@
-using Elsa.Persistence.Common.Implementations;
+using Elsa.Common.Implementations;
 using Elsa.Workflows.Persistence.Entities;
 using Elsa.Workflows.Persistence.Services;
 using Volte.Data.Dapper;
