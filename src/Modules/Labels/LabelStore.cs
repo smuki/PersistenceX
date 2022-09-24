@@ -3,16 +3,15 @@ using Elsa.Labels.Entities;
 using Elsa.Labels.Services;
 using Elsa.Persistence.EntityFrameworkCore.Common;
 using Elsa.Persistence.EntityFrameworkCore.Extensions;
-//using Elsa.Workflows.Persistence.Implementations;
 
 namespace Elsa.Persistence.EntityFrameworkCore.Modules.Labels;
 
 public class EFCoreLabelStore : ILabelStore
 {
-    private readonly VolteStore<Label> _labelStore;
-    private readonly VolteStore<WorkflowDefinitionLabel> _workflowDefinitionLabelStore;
+    private readonly Store<LabelsDbContext, Label> _labelStore;
+    private readonly Store<LabelsDbContext, WorkflowDefinitionLabel> _workflowDefinitionLabelStore;
 
-    public EFCoreLabelStore(VolteStore<Label> labelStore, VolteStore<WorkflowDefinitionLabel> workflowDefinitionLabelStore)
+    public EFCoreLabelStore(Store<LabelsDbContext, Label> labelStore, Store<LabelsDbContext, WorkflowDefinitionLabel> workflowDefinitionLabelStore)
     {
         _labelStore = labelStore;
         _workflowDefinitionLabelStore = workflowDefinitionLabelStore;

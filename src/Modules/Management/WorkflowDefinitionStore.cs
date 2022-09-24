@@ -9,69 +9,42 @@ using Elsa.Workflows.Core.Serialization;
 using Elsa.Workflows.Management.Entities;
 using Elsa.Workflows.Management.Models;
 using Elsa.Workflows.Management.Services;
-using Volte.Data.SqlKata;
-using Variable = Elsa.Workflows.Core.Models.Variable;
 
 namespace Elsa.Persistence.EntityFrameworkCore.Modules.Management;
 
 public class EFCoreWorkflowDefinitionStore : IWorkflowDefinitionStore
 {
-    private readonly VolteStore<WorkflowDefinition> _store;
+    private readonly Store<ManagementDbContext, WorkflowDefinition> _store;
     private readonly SerializerOptionsProvider _serializerOptionsProvider;
-        const string _tableName = "Workflow_Definition";
 
-    public EFCoreWorkflowDefinitionStore(VolteStore<WorkflowDefinition> store, SerializerOptionsProvider serializerOptionsProvider)
+    public EFCoreWorkflowDefinitionStore(Store<ManagementDbContext, WorkflowDefinition> store, SerializerOptionsProvider serializerOptionsProvider)
     {
         _store = store;
         _serializerOptionsProvider = serializerOptionsProvider;
     }
 
-    public async Task<WorkflowDefinition?> FindByIdAsync(string id, CancellationToken cancellationToken = default)
-    {
-        var _criteria = new Query(_tableName);
+    public async Task<WorkflowDefinition?> FindByIdAsync(string id, CancellationToken cancellationToken = default) =>
+        await _store.FindAsync(x => x.Id == id, Load, cancellationToken);
 
-        _criteria.Where("Id", "=", id);
-
-        return await _store.FindAsync(_criteria);
-    }
     public async Task<IEnumerable<WorkflowDefinition>> FindManyByDefinitionIdAsync(string definitionId, VersionOptions versionOptions, CancellationToken cancellationToken = default)
     {
-
-        var _criteria = new Query(_tableName);
-
-        //var _criteria = QueryBuilder<WorkflowDefinition>.Builder(_store.Trans);
-        _criteria.Where("DefinitionId", "=", definitionId);
-        //var definition = _store.Find(x => x.DefinitionId == definitionId && x.WithVersion(versionOptions));
-        return await _store.FindManyAsync(_criteria);
-
+        Expression<Func<WorkflowDefinition, bool>> predicate = x => x.DefinitionId == definitionId;
+        predicate = predicate.WithVersion(versionOptions);
+        return await _store.FindManyAsync(predicate, Load, cancellationToken);
     }
 
     public async Task<WorkflowDefinition?> FindByDefinitionIdAsync(string definitionId, VersionOptions versionOptions, CancellationToken cancellationToken = default)
     {
-
-        var _criteria = new Query(_tableName);
-
-        //var _criteria = QueryBuilder<WorkflowDefinition>.Builder(_store.Trans);
-        _criteria.Where("DefinitionId", "=", definitionId);
-        //var definition = _store.Find(x => x.DefinitionId == definitionId && x.WithVersion(versionOptions));
-        return await _store.FindAsync(_criteria);
-
-        //Expression<Func<WorkflowDefinition, bool>> predicate = x => x.DefinitionId == definitionId;
-        //predicate = predicate.WithVersion(versionOptions);
-        //return await _store.FindAsync(predicate, Load, cancellationToken);
+        Expression<Func<WorkflowDefinition, bool>> predicate = x => x.DefinitionId == definitionId;
+        predicate = predicate.WithVersion(versionOptions);
+        return await _store.FindAsync(predicate, Load, cancellationToken);
     }
 
     public async Task<WorkflowDefinition?> FindByNameAsync(string name, VersionOptions versionOptions, CancellationToken cancellationToken = default)
     {
-        var _criteria = new Query(_tableName);
-
-        //var _criteria = QueryBuilder<WorkflowDefinition>.Builder(_store.Trans);
-        _criteria.Where("Name", "=", name);
-        //var definition = _store.Find(x => x.DefinitionId == definitionId && x.WithVersion(versionOptions));
-        return await _store.FindAsync(_criteria);
-        //Expression<Func<WorkflowDefinition, bool>> predicate = x => x.Name == name;
-        //predicate = predicate.WithVersion(versionOptions);
-        //return await _store.FindAsync(predicate, Load, cancellationToken);
+        Expression<Func<WorkflowDefinition, bool>> predicate = x => x.Name == name;
+        predicate = predicate.WithVersion(versionOptions);
+        return await _store.FindAsync(predicate, Load, cancellationToken);
     }
 
     public async Task<IEnumerable<WorkflowDefinitionSummary>> FindManySummariesAsync(IEnumerable<string> definitionIds, VersionOptions? versionOptions = default, CancellationToken cancellationToken = default)

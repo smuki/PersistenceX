@@ -1,95 +1,152 @@
-using System.Collections.Generic;
 using System.Linq.Expressions;
+using EFCore.BulkExtensions;
 using Elsa.Common.Entities;
 using Elsa.Common.Models;
-using Volte.Data.Dapper;
-using Volte.Data.SqlKata;
+using Elsa.Persistence.EntityFrameworkCore.Extensions;
+using Microsoft.EntityFrameworkCore;
 
 namespace Elsa.Persistence.EntityFrameworkCore.Common;
 
-public class VolteStore<TEntity> where TEntity : Entity
+public class Store<TDbContext, TEntity> where TDbContext : DbContext where TEntity : class
 {
-    public IDbContext Trans { get; private set; }
+    private readonly IDbContextFactory<TDbContext> _dbContextFactory;
 
-    public VolteStore(IDbContext DbContext)
+    public Store(IDbContextFactory<TDbContext> dbContextFactory)
     {
-        this.Trans = DbContext;
-        this.Trans.Open("master");
-
+        _dbContextFactory = dbContextFactory;
     }
 
-    public void Open()
+    public async Task<TDbContext> CreateDbContextAsync(CancellationToken cancellationToken = default) => await _dbContextFactory.CreateDbContextAsync(cancellationToken);
+    public async Task SaveAsync(TEntity entity, CancellationToken cancellationToken = default) => await SaveAsync(entity, default, cancellationToken);
+
+    public async Task SaveAsync(TEntity entity, Func<TDbContext, TEntity, TEntity>? onSaving = default, CancellationToken cancellationToken = default)
     {
-        this.Trans.Open("master");
+        await using var dbContext = await CreateDbContextAsync(cancellationToken);
+        entity = onSaving?.Invoke(dbContext, entity) ?? entity;
+        await dbContext.BulkInsertOrUpdateAsync(new[] { entity }, config => { config.EnableShadowProperties = true; }, cancellationToken: cancellationToken);
     }
 
-    private IDictionary<string, TEntity> Entities { get; set; } = new Dictionary<string, TEntity>();
-    public void Save(TEntity entity)
+    public async Task SaveManyAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default) => await SaveManyAsync(entities, default, cancellationToken);
+
+    public async Task SaveManyAsync(IEnumerable<TEntity> entities, Func<TDbContext, TEntity, TEntity>? onSaving = default, CancellationToken cancellationToken = default)
     {
-        this.Trans.AddNewAsync<TEntity>(entity);
+        await using var dbContext = await CreateDbContextAsync(cancellationToken);
+        var entityList = entities.ToList();
+
+        if (onSaving != null)
+            entityList = entityList.Select(x => onSaving(dbContext, x)).ToList();
+
+        await dbContext.BulkInsertOrUpdateAsync(entityList, config => { config.EnableShadowProperties = true; }, cancellationToken: cancellationToken);
     }
 
-    public void SaveMany(IEnumerable<TEntity> entities)
+    public async Task<TEntity?> FindAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default) => await FindAsync(predicate, default, cancellationToken);
+
+    public async Task<TEntity?> FindAsync(Expression<Func<TEntity, bool>> predicate, Func<TDbContext, TEntity?, TEntity?>? onLoading = default, CancellationToken cancellationToken = default)
     {
-        foreach (var entity in entities)
+        await using var dbContext = await CreateDbContextAsync(cancellationToken);
+        var set = dbContext.Set<TEntity>();
+        var entity = await set.FirstOrDefaultAsync(predicate, cancellationToken);
+
+        if (entity == null)
+            return null;
+
+        entity = onLoading?.Invoke(dbContext, entity);
+
+        return entity;
+    }
+
+    public async Task<IEnumerable<TEntity>> FindManyAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default) => await FindManyAsync(predicate, default, cancellationToken);
+
+    public async Task<IEnumerable<TEntity>> FindManyAsync(Expression<Func<TEntity, bool>> predicate, Func<TDbContext, TEntity?, TEntity?>? onLoading = default, CancellationToken cancellationToken = default)
+    {
+        await using var dbContext = await CreateDbContextAsync(cancellationToken);
+        var set = dbContext.Set<TEntity>();
+        var entities = await set.Where(predicate).ToListAsync(cancellationToken);
+
+        if (onLoading != null)
+            entities = entities.Select(x => onLoading(dbContext, x)!).ToList();
+
+        return entities;
+    }
+
+    public async Task<Page<TEntity>> FindManyAsync<TKey>(
+        Expression<Func<TEntity, bool>> predicate,
+        Expression<Func<TEntity, TKey>> orderBy,
+        OrderDirection orderDirection = OrderDirection.Ascending,
+        PageArgs? pageArgs = default,
+        CancellationToken cancellationToken = default) =>
+        await FindManyAsync(predicate, orderBy, orderDirection, pageArgs, default, cancellationToken);
+
+    public async Task<Page<TEntity>> FindManyAsync<TKey>(
+        Expression<Func<TEntity, bool>> predicate,
+        Expression<Func<TEntity, TKey>> orderBy,
+        OrderDirection orderDirection = OrderDirection.Ascending,
+        PageArgs? pageArgs = default,
+        Func<TDbContext, TEntity?, TEntity?>? onLoading = default,
+        CancellationToken cancellationToken = default)
+    {
+        await using var dbContext = await CreateDbContextAsync(cancellationToken);
+        var set = dbContext.Set<TEntity>().Where(predicate);
+
+        set = orderDirection switch
         {
-            this.Trans.AddNewAsync<TEntity>(entity);
-        }
+            OrderDirection.Ascending => set.OrderBy(orderBy),
+            OrderDirection.Descending => set.OrderByDescending(orderBy),
+            _ => set.OrderBy(orderBy)
+        };
+
+        var page = await set.PaginateAsync(pageArgs);
+
+        if (onLoading != null)
+            page = new Page<TEntity>(page.Items.Select(x => onLoading(dbContext, x)!).ToList(), page.TotalCount);
+
+        return page;
     }
 
-    public async Task<TEntity?> FindAsync(Query _qEntity)
+    public async Task<bool> DeleteAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
-        return await Trans.SingleOrDefault<TEntity>(_qEntity);
-    }
-    public async Task<IEnumerable<TEntity>> FindManyAsync(Query _qEntity)
-    {
-        return await Trans.QueryAsync<TEntity>(_qEntity);
-    }
-    public IEnumerable<TEntity> List()
-    {
-        QueryBuilder _qEntity = QueryBuilder<TEntity>.Builder(Trans);
-        _qEntity.Top(10);
-        return Trans.Query<TEntity>(_qEntity);
+        await using var dbContext = await CreateDbContextAsync(cancellationToken);
+        var set = dbContext.Set<TEntity>();
+        set.Attach(entity).State = EntityState.Deleted;
+        return await dbContext.SaveChangesAsync(cancellationToken) == 1;
     }
 
-    public bool Delete(Query _qEntity)
+    public async Task<int> DeleteManyAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
     {
-
-        return Trans.DeleteAsync<TEntity>(_qEntity).Result > 0;
-    }
-
-    public int DeleteWhere(Query _qEntity)
-    {
-        return Trans.DeleteAsync<TEntity>(_qEntity).Result;
-    }
-
-    public int DeleteMany(Query _qEntity)
-    {
-        Trans.DeleteAsync<TEntity>(_qEntity);
-        return 1;
-    }
-
-    public int DeleteMany(IEnumerable<TEntity> entities)
-    {
-        var count = 0;
+        await using var dbContext = await CreateDbContextAsync(cancellationToken);
         var list = entities.ToList();
-
-        foreach (var entity in list)
-        {
-            count++;
-            Trans.Delete<TEntity>(entity);
-        }
-
-        return count;
+        await dbContext.BulkDeleteAsync(list, cancellationToken: cancellationToken);
+        return list.Count;
     }
 
-    public IEnumerable<TEntity> Query(Query _qEntity)
+    public async Task<int> DeleteWhereAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default)
     {
-        return Trans.QueryAsync<TEntity>(_qEntity).Result;
+        await using var dbContext = await CreateDbContextAsync(cancellationToken);
+        var set = dbContext.Set<TEntity>();
+        return await set.DeleteWhereAsync(dbContext, predicate, cancellationToken);
     }
 
-    public bool AnyAsync(Func<TEntity, bool> predicate)
+    public async Task<IEnumerable<TEntity>> QueryAsync(Func<IQueryable<TEntity>, IQueryable<TEntity>> query, CancellationToken cancellationToken = default) => await QueryAsync(query, default, cancellationToken);
+
+    public async Task<IEnumerable<TEntity>> QueryAsync(Func<IQueryable<TEntity>, IQueryable<TEntity>> query, Func<TDbContext, TEntity?, TEntity?>? onLoading = default, CancellationToken cancellationToken = default)
     {
-        return Entities.Values.Any(predicate);
+        await using var dbContext = await CreateDbContextAsync(cancellationToken);
+        var set = dbContext.Set<TEntity>();
+        var queryable = query(set.AsQueryable());
+
+        queryable = query(queryable);
+        var entities = await queryable.ToListAsync(cancellationToken);
+
+        if (onLoading != null)
+            entities = entities.Select(x => onLoading(dbContext, x)!).ToList();
+
+        return entities;
+    }
+
+    public async Task<bool> AnyAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default)
+    {
+        await using var dbContext = await CreateDbContextAsync(cancellationToken);
+        var set = dbContext.Set<TEntity>();
+        return await set.AnyAsync(predicate, cancellationToken);
     }
 }

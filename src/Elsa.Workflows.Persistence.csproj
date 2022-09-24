@@ -7,11 +7,13 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="EFCore.BulkExtensions" Version="6.4.2" />
       <PackageReference Include="Elsa.ActivityDefinitions" Version="1.0.1" />
       <PackageReference Include="Elsa.Features" Version="1.0.1" />
       <PackageReference Include="Elsa.Labels" Version="1.0.1" />
       <PackageReference Include="Elsa.Workflows.Management" Version="1.0.1" />
       <PackageReference Include="Elsa.Workflows.Runtime" Version="1.0.1" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.9" />
       <PackageReference Include="Volte.Data.Dapper" Version="1.0.18" />
       <PackageReference Include="Volte.Data.VolteDi" Version="1.0.8" />
     </ItemGroup>

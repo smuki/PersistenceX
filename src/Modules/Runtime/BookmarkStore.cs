@@ -4,10 +4,10 @@ using Elsa.Workflows.Runtime.Services;
 
 namespace Elsa.Persistence.EntityFrameworkCore.Modules.Runtime;
 
-public class VolteBookmarkStore : IBookmarkStore
+public class EFCoreBookmarkStore : IBookmarkStore
 {
-    private readonly VolteStore<StoredBookmark> _store;
-    public VolteBookmarkStore(VolteStore<StoredBookmark> store) => _store = store;
+    private readonly Store<RuntimeDbContext, StoredBookmark> _store;
+    public EFCoreBookmarkStore(Store<RuntimeDbContext, StoredBookmark> store) => _store = store;
 
     public async ValueTask SaveAsync(string activityTypeName, string hash, string workflowInstanceId, IEnumerable<string> bookmarkIds, CancellationToken cancellationToken = default)
     {

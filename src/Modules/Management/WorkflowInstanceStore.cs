@@ -14,10 +14,10 @@ namespace Elsa.Persistence.EntityFrameworkCore.Modules.Management;
 
 public class EFCoreWorkflowInstanceStore : IWorkflowInstanceStore
 {
-    private readonly VolteStore<WorkflowInstance> _store;
+    private readonly Store<ManagementDbContext, WorkflowInstance> _store;
     private readonly SerializerOptionsProvider _serializerOptionsProvider;
 
-    public EFCoreWorkflowInstanceStore(VolteStore<WorkflowInstance> store, SerializerOptionsProvider serializerOptionsProvider)
+    public EFCoreWorkflowInstanceStore(Store<ManagementDbContext, WorkflowInstance> store, SerializerOptionsProvider serializerOptionsProvider)
     {
         _store = store;
         _serializerOptionsProvider = serializerOptionsProvider;

@@ -1,12 +1,12 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
-//using EFCore.BulkExtensions;
+using EFCore.BulkExtensions;
 using Elsa.Common.Services;
 using Elsa.Persistence.EntityFrameworkCore.Common;
 using Elsa.Workflows.Core.Serialization;
 using Elsa.Workflows.Core.State;
 using Elsa.Workflows.Runtime.Services;
-//using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 
 namespace Elsa.Persistence.EntityFrameworkCore.Modules.Runtime;
 
@@ -14,17 +14,17 @@ public class EFCoreWorkflowStateStore : IWorkflowStateStore
 {
     private readonly SerializerOptionsProvider _serializerOptionsProvider;
     private readonly ISystemClock _systemClock;
-    //private readonly IDbContextFactory<RuntimeDbContext> _dbContextFactory;
+    private readonly IDbContextFactory<RuntimeDbContext> _dbContextFactory;
 
     public EFCoreWorkflowStateStore(
-        //IDbContextFactory<RuntimeDbContext> dbContextFactory,
-        VolteStore<WorkflowState> store, 
+        IDbContextFactory<RuntimeDbContext> dbContextFactory, 
+        Store<RuntimeDbContext, WorkflowState> store, 
         SerializerOptionsProvider serializerOptionsProvider, 
         ISystemClock systemClock)
     {
         _serializerOptionsProvider = serializerOptionsProvider;
         _systemClock = systemClock;
-        //_dbContextFactory = dbContextFactory;
+        _dbContextFactory = dbContextFactory;
     }
 
     public async ValueTask SaveAsync(string id, WorkflowState state, CancellationToken cancellationToken = default)
