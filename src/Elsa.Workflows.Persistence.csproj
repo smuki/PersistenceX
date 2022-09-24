@@ -7,9 +7,13 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Elsa.Workflows.Core" Version="1.0.0" />
+      <PackageReference Include="Elsa.Features" Version="1.0.0" />
       <PackageReference Include="Volte.Data.Dapper" Version="1.0.18" />
       <PackageReference Include="Volte.Data.VolteDi" Version="1.0.8" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Elsa.Workflows.Persistence.Abstract\Elsa.Workflows.Persistence.Abstract.csproj" />
     </ItemGroup>
     
 </Project>
