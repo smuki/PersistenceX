@@ -6,66 +6,42 @@ using Elsa.Workflows.Core.Features;
 using Elsa.Workflows.Persistence.Entities;
 using Elsa.Workflows.Persistence.Extensions;
 using Elsa.Workflows.Persistence.Implementations;
-using Elsa.Workflows.Persistence.Services;
+//using Elsa.Workflows.Persistence.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Volte.Data.Dapper;
+using Elsa.Workflows.Runtime.Features;
+using Elsa.Workflows.Management.Features;
 
 namespace Elsa.Workflows.Persistence.Features;
 
-[DependsOn(typeof(WorkflowsFeature))]
-public class WorkflowPersistenceFeature : FeatureBase
+[DependsOn(typeof(WorkflowManagementFeature))]
+public class WorkflowPersistenceFeature : PersistenceFeatureBase
 {
     public WorkflowPersistenceFeature(IModule module) : base(module)
     {
     }
     
-    public Func<IServiceProvider, IWorkflowDefinitionStore> WorkflowDefinitionStore { get; set; } = sp => sp.GetRequiredService<VolteWorkflowDefinitionStore>();
-    public Func<IServiceProvider, IWorkflowInstanceStore> WorkflowInstanceStore { get; set; } = sp => sp.GetRequiredService<VolteWorkflowInstanceStore>();
-    public Func<IServiceProvider, IWorkflowBookmarkStore> WorkflowBookmarkStore { get; set; } = sp => sp.GetRequiredService<VolteWorkflowBookmarkStore>();
-    public Func<IServiceProvider, IWorkflowTriggerStore> WorkflowTriggerStore { get; set; } = sp => sp.GetRequiredService<VolteWorkflowTriggerStore>();
-    public Func<IServiceProvider, IWorkflowExecutionLogStore> WorkflowExecutionLogStore { get; set; } = sp => sp.GetRequiredService<VolteWorkflowExecutionLogStore>();
-
-    public WorkflowPersistenceFeature WithWorkflowDefinitionStore(Func<IServiceProvider, IWorkflowDefinitionStore> factory)
+    public override void Configure()
     {
-        WorkflowDefinitionStore = factory;
-        return this;
+        Module.Configure<WorkflowManagementFeature>(feature =>
+        {
+            //feature.WorkflowStateStore = sp => sp.GetRequiredService<CoreWorkflowStateStore>();
+            //feature.WorkflowTriggerStore = sp => sp.GetRequiredService<EFCoreWorkflowTriggerStore>();
+            //feature.BookmarkStore = sp => sp.GetRequiredService<EFCoreBookmarkStore>();
+            //feature.WorkflowExecutionLogStore = sp => sp.GetRequiredService<EFCoreWorkflowExecutionLogStore>();
+        });
     }
-
-    public WorkflowPersistenceFeature WithWorkflowInstanceStore(Func<IServiceProvider, IWorkflowInstanceStore> factory)
-    {
-        WorkflowInstanceStore = factory;
-        return this;
-    }
-
-    public WorkflowPersistenceFeature WithWorkflowBookmarkStore(Func<IServiceProvider, IWorkflowBookmarkStore> factory)
-    {
-        WorkflowBookmarkStore = factory;
-        return this;
-    }
-
-    public WorkflowPersistenceFeature WithWorkflowTriggerStore(Func<IServiceProvider, IWorkflowTriggerStore> factory)
-    {
-        WorkflowTriggerStore = factory;
-        return this;
-    }
-
-    public WorkflowPersistenceFeature WithWorkflowExecutionLogStore(Func<IServiceProvider, IWorkflowExecutionLogStore> factory)
-    {
-        WorkflowExecutionLogStore = factory;
-        return this;
-    }
-
-    public override void Apply() =>
-        Services
-            .AddTransient<IDbContext, DbContext>()
-            .AddVolteStore<WorkflowDefinition, VolteWorkflowDefinitionStore>()
-            .AddVolteStore<WorkflowInstance, VolteWorkflowInstanceStore>()
-            .AddVolteStore<WorkflowBookmark, VolteWorkflowBookmarkStore>()
-            .AddVolteStore<WorkflowTrigger, VolteWorkflowTriggerStore>()
-            .AddVolteStore<WorkflowExecutionLogRecord, VolteWorkflowExecutionLogStore>()
-            .AddSingleton(WorkflowDefinitionStore)
-            .AddSingleton(WorkflowInstanceStore)
-            .AddSingleton(WorkflowBookmarkStore)
-            .AddSingleton(WorkflowTriggerStore)
-            .AddSingleton(WorkflowExecutionLogStore);
+    //public override void Apply() =>
+        //Services
+        //    .AddTransient<IDbContext, DbContext>()
+        //    .AddVolteStore<WorkflowDefinition, VolteWorkflowDefinitionStore>()
+        //    .AddVolteStore<WorkflowInstance, VolteWorkflowInstanceStore>()
+        //    .AddVolteStore<WorkflowBookmark, VolteWorkflowBookmarkStore>()
+        //    .AddVolteStore<WorkflowTrigger, VolteWorkflowTriggerStore>()
+        //    .AddVolteStore<WorkflowExecutionLogRecord, VolteWorkflowExecutionLogStore>()
+        //    .AddSingleton(WorkflowDefinitionStore)
+        //    .AddSingleton(WorkflowInstanceStore)
+        //    .AddSingleton(WorkflowBookmarkStore)
+        //    .AddSingleton(WorkflowTriggerStore)
+        //    .AddSingleton(WorkflowExecutionLogStore);
 }

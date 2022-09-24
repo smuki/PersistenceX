@@ -8,7 +8,7 @@ namespace Elsa.Workflows.Persistence.Entities;
 
 [Serializable]
 [AttributeMapping(TableName = "workflow_bookmark",Document =true)]
-public class WorkflowBookmark : Entity, IDataObject
+public class DTDWorkflowBookmark : Entity, IDataObject
 {
     public string Name { get; init; } = default!;
     public string? Hash { get; set; }
@@ -22,7 +22,7 @@ public class WorkflowBookmark : Entity, IDataObject
 
     public Bookmark ToBookmark() => new(Id, Name, Hash, Data, ActivityId, ActivityInstanceId, CallbackMethodName);
 
-    public static WorkflowBookmark FromBookmark(Bookmark bookmark, WorkflowInstance workflowInstance) =>
+    public static DTDWorkflowBookmark FromBookmark(Bookmark bookmark, WorkflowInstance workflowInstance) =>
         new()
         {
             Id = bookmark.Id,

@@ -5,8 +5,6 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Elsa.Workflows.Persistence", "Elsa.Workflows.Persistence.csproj", "{4373438A-2B70-4F9D-8829-7EA045F3890A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elsa.Workflows.Persistence.Abstract", "..\Elsa.Workflows.Persistence.Abstract\Elsa.Workflows.Persistence.Abstract.csproj", "{11F2DF62-EAD6-4D95-AA27-CAA11DDF20C6}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,10 +15,6 @@ Global
 		{4373438A-2B70-4F9D-8829-7EA045F3890A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4373438A-2B70-4F9D-8829-7EA045F3890A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4373438A-2B70-4F9D-8829-7EA045F3890A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{11F2DF62-EAD6-4D95-AA27-CAA11DDF20C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{11F2DF62-EAD6-4D95-AA27-CAA11DDF20C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{11F2DF62-EAD6-4D95-AA27-CAA11DDF20C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{11F2DF62-EAD6-4D95-AA27-CAA11DDF20C6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

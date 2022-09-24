@@ -10,4 +10,8 @@
     <PackageReference Include="Elsa.Expressions" Version="1.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Service\" />
+  </ItemGroup>
+
 </Project>
